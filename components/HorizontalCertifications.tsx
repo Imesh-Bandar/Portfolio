@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { FiAward, FiExternalLink, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import Image from 'next/image';
@@ -24,6 +24,7 @@ export default function HorizontalCertifications({
   theme,
 }: HorizontalCertificationsProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
+  const [isPaused, setIsPaused] = useState(false);
 
   const scroll = (direction: 'left' | 'right') => {
     if (scrollRef.current) {
@@ -34,6 +35,34 @@ export default function HorizontalCertifications({
       });
     }
   };
+
+  // Auto-scroll functionality
+  useEffect(() => {
+    const scrollContainer = scrollRef.current;
+    if (!scrollContainer) return;
+
+    let scrollInterval: NodeJS.Timeout;
+
+    const startAutoScroll = () => {
+      scrollInterval = setInterval(() => {
+        if (!isPaused && scrollContainer) {
+          const maxScroll = scrollContainer.scrollWidth - scrollContainer.clientWidth;
+
+          if (scrollContainer.scrollLeft >= maxScroll - 1) {
+            scrollContainer.scrollTo({ left: 0, behavior: 'smooth' });
+          } else {
+            scrollContainer.scrollBy({ left: 1, behavior: 'auto' });
+          }
+        }
+      }, 20);
+    };
+
+    startAutoScroll();
+
+    return () => {
+      if (scrollInterval) clearInterval(scrollInterval);
+    };
+  }, [isPaused]);
 
   return (
     <div className="relative overflow-hidden py-32">
@@ -83,7 +112,9 @@ export default function HorizontalCertifications({
         <div
           ref={scrollRef}
           className="flex gap-6 overflow-x-auto hide-scrollbar px-6"
-          style={{ scrollSnapType: 'x mandatory' }}
+          style={{ scrollSnapType: 'none' }}
+          onMouseEnter={() => setIsPaused(true)}
+          onMouseLeave={() => setIsPaused(false)}
         >
           {certifications.map((cert, index) => (
             <motion.div

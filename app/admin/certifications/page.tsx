@@ -430,7 +430,7 @@ export default function CertificationsPage() {
 
                 {formData.modules.length === 0 && (
                   <div className="text-center py-4 text-gray-500 border border-dashed border-gray-300 rounded-lg">
-                    No modules added yet. Click "Add Module" to get started.
+                    No modules added yet. Click &quot;Add Module&quot; to get started.
                   </div>
                 )}
               </div>

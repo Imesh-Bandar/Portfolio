@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { FiArrowUpRight, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
@@ -22,6 +22,7 @@ interface HorizontalProjectsProps {
 
 export default function HorizontalProjects({ projects, theme }: HorizontalProjectsProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
+  const [isPaused, setIsPaused] = useState(false);
 
   const scroll = (direction: 'left' | 'right') => {
     if (scrollRef.current) {
@@ -32,6 +33,37 @@ export default function HorizontalProjects({ projects, theme }: HorizontalProjec
       });
     }
   };
+
+  // Auto-scroll functionality
+  useEffect(() => {
+    const scrollContainer = scrollRef.current;
+    if (!scrollContainer) return;
+
+    let scrollInterval: NodeJS.Timeout;
+
+    const startAutoScroll = () => {
+      scrollInterval = setInterval(() => {
+        if (!isPaused && scrollContainer) {
+          const maxScroll = scrollContainer.scrollWidth - scrollContainer.clientWidth;
+
+          // Check if we've reached the end
+          if (scrollContainer.scrollLeft >= maxScroll - 1) {
+            // Reset to beginning
+            scrollContainer.scrollTo({ left: 0, behavior: 'smooth' });
+          } else {
+            // Continue scrolling
+            scrollContainer.scrollBy({ left: 1, behavior: 'auto' });
+          }
+        }
+      }, 20); // Smooth scroll speed
+    };
+
+    startAutoScroll();
+
+    return () => {
+      if (scrollInterval) clearInterval(scrollInterval);
+    };
+  }, [isPaused]);
 
   return (
     <div className="relative overflow-hidden py-32">
@@ -86,7 +118,9 @@ export default function HorizontalProjects({ projects, theme }: HorizontalProjec
         <div
           ref={scrollRef}
           className="flex gap-8 overflow-x-auto hide-scrollbar px-6"
-          style={{ scrollSnapType: 'x mandatory' }}
+          style={{ scrollSnapType: 'none' }}
+          onMouseEnter={() => setIsPaused(true)}
+          onMouseLeave={() => setIsPaused(false)}
         >
           {projects.map((project, index) => (
             <Link href={`/projects/${project._id}`} key={`${project._id}-${index}`}>

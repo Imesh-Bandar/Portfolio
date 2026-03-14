@@ -14,12 +14,12 @@ export default function EducationPage() {
     isOngoing: false, grade: '', description: '', order: 0, isActive: true
   });
 
-  useEffect(() => { fetchEducation(); }, []);
-
   const fetchEducation = async () => {
     const res = await fetch('/api/education');
     setEducation(await res.json());
   };
+
+  useEffect(() => { fetchEducation(); }, [fetchEducation]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

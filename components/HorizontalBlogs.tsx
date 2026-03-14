@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { FiFileText, FiClock, FiEye, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import Image from 'next/image';
@@ -27,10 +27,39 @@ interface HorizontalBlogsProps {
 
 export default function HorizontalBlogs({ blogs, theme, onBlogClick }: HorizontalBlogsProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
+  const [isPaused, setIsPaused] = useState(false);
   const publishedBlogs = blogs.filter((blog) => blog.isPublished);
   const scroll = (dir: 'left' | 'right') => {
     scrollRef.current?.scrollBy({ left: dir === 'left' ? -420 : 420, behavior: 'smooth' });
   };
+
+  // Auto-scroll functionality
+  useEffect(() => {
+    const scrollContainer = scrollRef.current;
+    if (!scrollContainer) return;
+
+    let scrollInterval: NodeJS.Timeout;
+
+    const startAutoScroll = () => {
+      scrollInterval = setInterval(() => {
+        if (!isPaused && scrollContainer) {
+          const maxScroll = scrollContainer.scrollWidth - scrollContainer.clientWidth;
+
+          if (scrollContainer.scrollLeft >= maxScroll - 1) {
+            scrollContainer.scrollTo({ left: 0, behavior: 'smooth' });
+          } else {
+            scrollContainer.scrollBy({ left: 1, behavior: 'auto' });
+          }
+        }
+      }, 20);
+    };
+
+    startAutoScroll();
+
+    return () => {
+      if (scrollInterval) clearInterval(scrollInterval);
+    };
+  }, [isPaused]);
 
   return (
     <div className="relative overflow-hidden py-32">
@@ -46,7 +75,7 @@ export default function HorizontalBlogs({ blogs, theme, onBlogClick }: Horizonta
         </div>
       </div>
       <div className="relative">
-        <div ref={scrollRef} className="flex gap-6 overflow-x-auto hide-scrollbar px-6" style={{ scrollSnapType: 'x mandatory' }}>
+        <div ref={scrollRef} className="flex gap-6 overflow-x-auto hide-scrollbar px-6" style={{ scrollSnapType: 'none' }} onMouseEnter={() => setIsPaused(true)} onMouseLeave={() => setIsPaused(false)}>
           {publishedBlogs.map((blog, index) => (
             <motion.div key={`${blog._id}-${index}`} className={`group flex-shrink-0 w-[400px] h-[550px] rounded-2xl overflow-hidden cursor-pointer ${theme === 'dark' ? 'bg-[#141414]' : 'bg-white'}`} style={{ scrollSnapAlign: 'start' }} whileHover={{ scale: 1.02, y: -5 }} transition={{ duration: 0.4 }} onClick={() => onBlogClick(blog)}>
               <div className="relative h-[280px] overflow-hidden">

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { FiGithub, FiLinkedin, FiMail, FiExternalLink, FiAward, FiCode, FiBookOpen, FiFolder, FiArrowRight, FiStar, FiMapPin, FiDownload, FiBriefcase, FiSun, FiMoon, FiImage, FiFileText, FiClock, FiEye, FiMenu, FiX } from 'react-icons/fi';
+import { FiGithub, FiLinkedin, FiMail, FiSun, FiMoon, FiMenu, FiX } from 'react-icons/fi';
 import { motion } from 'framer-motion';
 import { useTheme } from '@/lib/context/ThemeContext';
 import DoodleBackground from '@/components/DoodleBackground';
@@ -710,10 +710,10 @@ export default function Home() {
         <SectionTransition id="contact" className={`py-24 relative ${theme === 'dark' ? 'bg-[#C1BFBE]/5' : 'bg-gray-50/50'}`} animationType="scale-up" sectionName="Get In Touch">
           <div className="max-w-4xl mx-auto px-6 text-center">
             <h2 className={`text-4xl md:text-5xl font-bold mb-6 ${theme === 'dark' ? 'text-white' : 'text-black'}`}>
-              Let's Work Together
+              Let&apos;s Work Together
             </h2>
             <p className={`text-lg mb-8 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
-              Have a project in mind? Let's create something amazing together.
+              Have a project in mind? Let&apos;s create something amazing together.
             </p>
 
             <div className="flex flex-wrap items-center justify-center gap-4">

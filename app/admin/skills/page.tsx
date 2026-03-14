@@ -14,12 +14,12 @@ export default function SkillsPage() {
     description: '', order: 0, isActive: true
   });
 
-  useEffect(() => { fetchSkills(); }, []);
-
   const fetchSkills = async () => {
     const res = await fetch('/api/skills');
     setSkills(await res.json());
   };
+
+  useEffect(() => { fetchSkills(); }, [fetchSkills]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

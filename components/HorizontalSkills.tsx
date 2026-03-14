@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 
@@ -20,6 +20,7 @@ interface HorizontalSkillsProps {
 
 export default function HorizontalSkills({ skills, theme }: HorizontalSkillsProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
+  const [isPaused, setIsPaused] = useState(false);
 
   const scroll = (direction: 'left' | 'right') => {
     if (scrollRef.current) {
@@ -30,6 +31,34 @@ export default function HorizontalSkills({ skills, theme }: HorizontalSkillsProp
       });
     }
   };
+
+  // Auto-scroll functionality
+  useEffect(() => {
+    const scrollContainer = scrollRef.current;
+    if (!scrollContainer) return;
+
+    let scrollInterval: NodeJS.Timeout;
+
+    const startAutoScroll = () => {
+      scrollInterval = setInterval(() => {
+        if (!isPaused && scrollContainer) {
+          const maxScroll = scrollContainer.scrollWidth - scrollContainer.clientWidth;
+
+          if (scrollContainer.scrollLeft >= maxScroll - 1) {
+            scrollContainer.scrollTo({ left: 0, behavior: 'smooth' });
+          } else {
+            scrollContainer.scrollBy({ left: 1, behavior: 'auto' });
+          }
+        }
+      }, 20);
+    };
+
+    startAutoScroll();
+
+    return () => {
+      if (scrollInterval) clearInterval(scrollInterval);
+    };
+  }, [isPaused]);
 
   const getLevelColor = (level: string) => {
     switch (level.toLowerCase()) {
@@ -92,7 +121,9 @@ export default function HorizontalSkills({ skills, theme }: HorizontalSkillsProp
         <div
           ref={scrollRef}
           className="flex gap-6 overflow-x-auto hide-scrollbar px-6"
-          style={{ scrollSnapType: 'x mandatory' }}
+          style={{ scrollSnapType: 'none' }}
+          onMouseEnter={() => setIsPaused(true)}
+          onMouseLeave={() => setIsPaused(false)}
         >
           {skills.map((skill, index) => (
             <motion.div
