@@ -165,14 +165,44 @@ export default function HorizontalSkills({ skills, theme }: HorizontalSkillsProp
               </h3>
 
               {/* Level */}
-              <div className="mt-6">
-                <p
-                  className={`text-sm font-medium ${getLevelColor(
-                    skill.level
-                  )}`}
-                >
-                  {skill.level}
-                </p>
+              <div className="mt-auto">
+                <div className="flex justify-between items-center mb-2">
+                  <p
+                    className={`text-sm font-medium ${getLevelColor(
+                      skill.level
+                    )}`}
+                  >
+                    {skill.level}
+                  </p>
+                  {skill.percentage !== undefined && (
+                    <span
+                      className={`text-xs font-bold ${
+                        theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
+                      }`}
+                    >
+                      {skill.percentage}%
+                    </span>
+                  )}
+                </div>
+
+                {/* Progress Bar */}
+                {skill.percentage !== undefined && (
+                  <div
+                    className={`w-full h-2 rounded-full overflow-hidden ${
+                      theme === 'dark' ? 'bg-gray-800' : 'bg-gray-200'
+                    }`}
+                  >
+                    <motion.div
+                      className={`h-full rounded-full ${
+                        theme === 'dark' ? 'bg-gray-400' : 'bg-gray-700'
+                      }`}
+                      initial={{ width: 0 }}
+                      whileInView={{ width: `${skill.percentage}%` }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 1, ease: 'easeOut' }}
+                    />
+                  </div>
+                )}
               </div>
             </motion.div>
           ))}
