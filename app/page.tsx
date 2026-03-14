@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { FiGithub, FiLinkedin, FiMail, FiSun, FiMoon, FiMenu, FiX } from 'react-icons/fi';
+import { FaWhatsapp } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 import { useTheme } from '@/lib/context/ThemeContext';
 import DoodleBackground from '@/components/DoodleBackground';
@@ -531,6 +532,16 @@ export default function Home() {
                 >
                   Email ↗
                 </a>
+                <a
+                  href="https://wa.me/94704394523"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`text-sm transition-colors ${
+                    theme === 'dark' ? 'text-gray-600 hover:text-white' : 'text-gray-400 hover:text-black'
+                  }`}
+                >
+                  WhatsApp ↗
+                </a>
               </motion.div>
             </div>
 
@@ -754,6 +765,19 @@ export default function Home() {
                 <FiLinkedin size={20} />
                 LinkedIn
               </a>
+              <a
+                href="https://wa.me/94704394523"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`px-8 py-4 rounded-lg font-medium transition-colors border flex items-center gap-2 ${
+                  theme === 'dark'
+                    ? 'bg-[#25D366]/20 hover:bg-[#25D366]/30 text-[#25D366] border-[#25D366]/40'
+                    : 'bg-[#25D366]/10 hover:bg-[#25D366]/20 text-[#128C7E] border-[#25D366]/30'
+                }`}
+              >
+                <FaWhatsapp size={20} />
+                WhatsApp
+              </a>
             </div>
           </div>
         </SectionTransition>
@@ -775,6 +799,9 @@ export default function Home() {
                 <a href="mailto:imesh.fsd.info@gmail.com" className="text-gray-500 hover:text-[#C1BFBE] transition-colors">
                   <FiMail size={20} />
                 </a>
+                <a href="https://wa.me/94704394523" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-[#25D366] transition-colors">
+                  <FaWhatsapp size={20} />
+                </a>
                 <Link href="/admin" className={`transition-colors text-sm ${
                   theme === 'dark'
                     ? 'text-gray-500 hover:text-gray-300'
@@ -795,6 +822,22 @@ export default function Home() {
         item={selectedItem}
         type={modalType}
       />
+
+      {/* Floating WhatsApp Button */}
+      <motion.a
+        href="https://wa.me/94704394523"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="fixed bottom-6 right-6 z-50 w-14 h-14 bg-[#25D366] hover:bg-[#20bd5a] text-white rounded-full flex items-center justify-center shadow-lg shadow-[#25D366]/30 transition-colors"
+        initial={{ scale: 0, opacity: 0 }}
+        animate={{ scale: 1, opacity: 1 }}
+        transition={{ duration: 0.5, delay: 2 }}
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.9 }}
+        title="Chat on WhatsApp"
+      >
+        <FaWhatsapp size={28} />
+      </motion.a>
     </>
   );
 }
