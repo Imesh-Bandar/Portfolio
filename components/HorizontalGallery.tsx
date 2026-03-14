@@ -33,16 +33,22 @@ export default function HorizontalGallery({ gallery, theme, onItemClick }: Horiz
     if (!scrollContainer) return;
 
     let scrollInterval: NodeJS.Timeout;
+    let isResetting = false;
 
     const startAutoScroll = () => {
       scrollInterval = setInterval(() => {
-        if (!isPaused && scrollContainer) {
+        if (!isPaused && scrollContainer && !isResetting) {
           const maxScroll = scrollContainer.scrollWidth - scrollContainer.clientWidth;
+          const currentScroll = scrollContainer.scrollLeft;
 
-          if (scrollContainer.scrollLeft >= maxScroll - 1) {
-            scrollContainer.scrollTo({ left: 0, behavior: 'smooth' });
+          if (currentScroll >= maxScroll - 2) {
+            isResetting = true;
+            scrollContainer.scrollLeft = 0;
+            setTimeout(() => {
+              isResetting = false;
+            }, 50);
           } else {
-            scrollContainer.scrollBy({ left: 1, behavior: 'auto' });
+            scrollContainer.scrollLeft += 1;
           }
         }
       }, 20);

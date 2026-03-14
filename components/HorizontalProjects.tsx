@@ -40,19 +40,25 @@ export default function HorizontalProjects({ projects, theme }: HorizontalProjec
     if (!scrollContainer) return;
 
     let scrollInterval: NodeJS.Timeout;
+    let isResetting = false;
 
     const startAutoScroll = () => {
       scrollInterval = setInterval(() => {
-        if (!isPaused && scrollContainer) {
+        if (!isPaused && scrollContainer && !isResetting) {
           const maxScroll = scrollContainer.scrollWidth - scrollContainer.clientWidth;
+          const currentScroll = scrollContainer.scrollLeft;
 
-          // Check if we've reached the end
-          if (scrollContainer.scrollLeft >= maxScroll - 1) {
-            // Reset to beginning
-            scrollContainer.scrollTo({ left: 0, behavior: 'smooth' });
+          // Check if we've reached the end (with small buffer)
+          if (currentScroll >= maxScroll - 2) {
+            isResetting = true;
+            // Instantly reset to beginning
+            scrollContainer.scrollLeft = 0;
+            setTimeout(() => {
+              isResetting = false;
+            }, 50);
           } else {
-            // Continue scrolling
-            scrollContainer.scrollBy({ left: 1, behavior: 'auto' });
+            // Continue scrolling smoothly
+            scrollContainer.scrollLeft += 1;
           }
         }
       }, 20); // Smooth scroll speed

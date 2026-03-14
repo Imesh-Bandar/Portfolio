@@ -10,6 +10,7 @@ interface Certification {
   title: string;
   issuer: string;
   issueDate: string;
+  description?: string;
   credentialUrl?: string;
   imageUrl?: string;
 }
@@ -42,16 +43,22 @@ export default function HorizontalCertifications({
     if (!scrollContainer) return;
 
     let scrollInterval: NodeJS.Timeout;
+    let isResetting = false;
 
     const startAutoScroll = () => {
       scrollInterval = setInterval(() => {
-        if (!isPaused && scrollContainer) {
+        if (!isPaused && scrollContainer && !isResetting) {
           const maxScroll = scrollContainer.scrollWidth - scrollContainer.clientWidth;
+          const currentScroll = scrollContainer.scrollLeft;
 
-          if (scrollContainer.scrollLeft >= maxScroll - 1) {
-            scrollContainer.scrollTo({ left: 0, behavior: 'smooth' });
+          if (currentScroll >= maxScroll - 2) {
+            isResetting = true;
+            scrollContainer.scrollLeft = 0;
+            setTimeout(() => {
+              isResetting = false;
+            }, 50);
           } else {
-            scrollContainer.scrollBy({ left: 1, behavior: 'auto' });
+            scrollContainer.scrollLeft += 1;
           }
         }
       }, 20);
@@ -119,8 +126,8 @@ export default function HorizontalCertifications({
           {certifications.map((cert, index) => (
             <motion.div
               key={`${cert._id}-${index}`}
-              className={`flex-shrink-0 w-[350px] h-[450px] rounded-2xl overflow-hidden cursor-pointer ${
-                theme === 'dark' ? 'bg-[#141414]' : 'bg-white'
+              className={`flex-shrink-0 w-[350px] rounded-2xl overflow-hidden cursor-pointer border ${
+                theme === 'dark' ? 'bg-[#141414] border-gray-800' : 'bg-white border-gray-200'
               }`}
               style={{ scrollSnapAlign: 'start' }}
               whileHover={{ scale: 1.02, y: -5 }}
@@ -151,7 +158,7 @@ export default function HorizontalCertifications({
               </div>
 
               {/* Certificate Info */}
-              <div className="p-6">
+              <div className="p-6 flex flex-col h-[calc(100%-250px)]">
                 <h3
                   className={`text-xl font-bold mb-2 line-clamp-2 text-hover-zoom ${
                     theme === 'dark' ? 'text-white' : 'text-black'
@@ -170,7 +177,7 @@ export default function HorizontalCertifications({
                 </p>
 
                 <p
-                  className={`text-xs mb-4 ${
+                  className={`text-xs mb-3 ${
                     theme === 'dark' ? 'text-gray-600' : 'text-gray-400'
                   }`}
                 >
@@ -180,8 +187,18 @@ export default function HorizontalCertifications({
                   })}
                 </p>
 
+                {cert.description && (
+                  <p
+                    className={`text-sm mb-4 line-clamp-3 ${
+                      theme === 'dark' ? 'text-gray-500' : 'text-gray-600'
+                    }`}
+                  >
+                    {cert.description}
+                  </p>
+                )}
+
                 {cert.credentialUrl && (
-                  <div className="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-400 transition-colors">
+                  <div className="flex items-center gap-2 text-sm text-gray-500 hover:text-gray-400 transition-colors mt-auto">
                     <FiExternalLink size={16} />
                     <span>View Credential</span>
                   </div>
