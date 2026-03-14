@@ -4,6 +4,10 @@ import { existsSync } from 'fs';
 import path from 'path';
 import { withAuth } from '@/lib/utils/middleware';
 
+// Configure route to handle larger uploads (10MB)
+export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
+
 export async function POST(request: NextRequest) {
   return withAuth(request, async (req) => {
     try {
@@ -26,11 +30,11 @@ export async function POST(request: NextRequest) {
         );
       }
 
-      // Validate file size (5MB max)
-      const maxSize = 5 * 1024 * 1024; // 5MB
+      // Validate file size (10MB max)
+      const maxSize = 10 * 1024 * 1024; // 10MB
       if (file.size > maxSize) {
         return NextResponse.json(
-          { error: 'File too large. Maximum size is 5MB.' },
+          { error: 'File too large. Maximum size is 10MB.' },
           { status: 400 }
         );
       }

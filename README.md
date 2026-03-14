@@ -84,13 +84,49 @@ db.users.insertOne({
 })
 ```
 
+## CI/CD
+
+This project includes automated CI/CD pipelines using GitHub Actions:
+
+- **Continuous Integration**: Automated linting, type checking, and builds on every push and PR
+- **Pull Request Checks**: Automated validation and status comments on PRs
+- **Continuous Deployment**: Automated deployment to your chosen platform
+
+For detailed setup instructions, see [CI_CD_SETUP.md](CI_CD_SETUP.md).
+
+### Quick Start
+
+1. **Enable GitHub Actions** in your repository settings
+2. **Add required secrets** to GitHub (Settings → Secrets and variables → Actions):
+   - `MONGODB_URI`
+   - `NEXTAUTH_SECRET`
+   - `NEXTAUTH_URL`
+   - `JWT_SECRET`
+3. **Configure deployment** in [.github/workflows/deploy.yml](.github/workflows/deploy.yml)
+4. **Push to master/main** to trigger deployment
+
+### Workflow Status
+
+![CI](https://github.com/YOUR_USERNAME/YOUR_REPO/workflows/CI/badge.svg)
+![Deploy](https://github.com/YOUR_USERNAME/YOUR_REPO/workflows/Deploy/badge.svg)
+
 ## Deployment
 
-Deploy to Vercel:
+### Option 1: Vercel (Recommended)
+
 1. Push to GitHub
 2. Import to Vercel
 3. Add environment variables
-4. Deploy
+4. Deploy automatically via CI/CD
+
+### Option 2: Manual Deployment
+
+Build and deploy manually:
+
+```bash
+npm run build
+npm start
+```
 
 ## License
 

@@ -30,8 +30,8 @@ export default function ImageUpload({
       return;
     }
 
-    if (file.size > 5 * 1024 * 1024) {
-      toast.error('File size must be less than 5MB');
+    if (file.size > 10 * 1024 * 1024) {
+      toast.error('File size must be less than 10MB');
       return;
     }
 
@@ -150,7 +150,7 @@ export default function ImageUpload({
             </span>
             <span className="text-xs text-[#5F5F60] mb-3">or click to browse</span>
             <span className="text-xs text-[#4C4D4E] bg-[#C1BFBE]/30 px-3 py-1 rounded">
-              PNG, JPG, GIF, WEBP up to 5MB
+              PNG, JPG, GIF, WEBP up to 10MB
             </span>
             <input
               type="file"

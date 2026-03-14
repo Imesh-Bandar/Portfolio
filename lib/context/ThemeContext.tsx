@@ -18,8 +18,11 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     setMounted(true);
     const savedTheme = localStorage.getItem('theme') as Theme;
-    if (savedTheme) {
+    if (savedTheme && savedTheme !== theme) {
       setTheme(savedTheme);
+    } else {
+      // Set initial theme attribute
+      document.documentElement.setAttribute('data-theme', theme);
     }
   }, []);
 
@@ -34,10 +37,8 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     setTheme(prev => prev === 'dark' ? 'light' : 'dark');
   };
 
-  if (!mounted) {
-    return null;
-  }
-
+  // Render children immediately with default theme to prevent hydration mismatch
+  // The theme will update on mount if a saved preference exists
   return (
     <ThemeContext.Provider value={{ theme, toggleTheme }}>
       {children}

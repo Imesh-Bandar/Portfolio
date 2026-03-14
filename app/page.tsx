@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { FiGithub, FiLinkedin, FiMail, FiExternalLink, FiAward, FiCode, FiBookOpen, FiFolder, FiArrowRight, FiStar, FiMapPin, FiDownload, FiBriefcase, FiSun, FiMoon, FiImage, FiFileText, FiClock, FiEye } from 'react-icons/fi';
+import { FiGithub, FiLinkedin, FiMail, FiExternalLink, FiAward, FiCode, FiBookOpen, FiFolder, FiArrowRight, FiStar, FiMapPin, FiDownload, FiBriefcase, FiSun, FiMoon, FiImage, FiFileText, FiClock, FiEye, FiMenu, FiX } from 'react-icons/fi';
 import { motion } from 'framer-motion';
 import { useTheme } from '@/lib/context/ThemeContext';
 import DoodleBackground from '@/components/DoodleBackground';
@@ -45,6 +45,7 @@ export default function Home() {
   const [selectedItem, setSelectedItem] = useState<any>(null);
   const [modalType, setModalType] = useState<'project' | 'skill' | 'education' | 'experience' | 'certification' | 'blog' | 'gallery' | 'technology'>('project');
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const openModal = (item: any, type: typeof modalType) => {
     setSelectedItem(item);
@@ -141,6 +142,7 @@ export default function Home() {
               Imesh Bandara
             </a>
 
+            {/* Desktop Navigation */}
             <div className="hidden md:flex items-center gap-10">
               {['Work', 'About', 'Contact'].map((item) => (
                 <a
@@ -168,8 +170,64 @@ export default function Home() {
                 {theme === 'dark' ? <FiSun size={16} /> : <FiMoon size={16} />}
               </motion.button>
             </div>
+
+            {/* Mobile Navigation */}
+            <div className="flex md:hidden items-center gap-4">
+              <motion.button
+                onClick={toggleTheme}
+                className={`w-9 h-9 flex items-center justify-center rounded-full border transition-colors ${
+                  theme === 'dark'
+                    ? 'border-[#2a2a2a] hover:border-[#3a3a3a] text-gray-400'
+                    : 'border-gray-200 hover:border-gray-300 text-gray-600'
+                }`}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                {theme === 'dark' ? <FiSun size={16} /> : <FiMoon size={16} />}
+              </motion.button>
+              <button
+                type="button"
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                className={`w-9 h-9 flex items-center justify-center rounded-full border transition-colors ${
+                  theme === 'dark'
+                    ? 'border-[#2a2a2a] hover:border-[#3a3a3a] text-gray-400'
+                    : 'border-gray-200 hover:border-gray-300 text-gray-600'
+                }`}
+              >
+                {isMobileMenuOpen ? <FiX size={16} /> : <FiMenu size={16} />}
+              </button>
+            </div>
           </div>
         </div>
+
+        {/* Mobile Menu */}
+        {isMobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            className={`md:hidden border-t ${
+              theme === 'dark' ? 'border-[#1a1a1a] bg-[#0a0a0a]/95' : 'border-[#e0e0e0] bg-[#fafafa]/95'
+            }`}
+          >
+            <div className="px-6 py-4 space-y-3">
+              {['Work', 'About', 'Contact'].map((item) => (
+                <a
+                  key={item}
+                  href={`#${item.toLowerCase()}`}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className={`block text-sm tracking-wide transition-colors py-2 ${
+                    activeSection === item.toLowerCase()
+                      ? theme === 'dark' ? 'text-white' : 'text-black'
+                      : theme === 'dark' ? 'text-gray-500 hover:text-white' : 'text-gray-500 hover:text-black'
+                  }`}
+                >
+                  {item}
+                </a>
+              ))}
+            </div>
+          </motion.div>
+        )}
       </nav>
 
       <main className={`transition-colors ${
