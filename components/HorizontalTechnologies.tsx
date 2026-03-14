@@ -128,7 +128,7 @@ export default function HorizontalTechnologies({
             return (
               <motion.div
                 key={`${tech._id}-${index}`}
-                className={`flex-shrink-0 w-[280px] p-8 rounded-2xl border transition-all ${
+                className={`flex-shrink-0 w-[240px] sm:w-[260px] md:w-[280px] p-6 sm:p-7 md:p-8 rounded-2xl border transition-all ${
                   theme === 'dark'
                     ? 'bg-[#141414] border-gray-800 hover:border-gray-700'
                     : 'bg-white border-gray-200 hover:border-gray-300'
@@ -138,18 +138,18 @@ export default function HorizontalTechnologies({
                 transition={{ duration: 0.3 }}
               >
                 {/* Tech Logo */}
-                <div className="flex items-center justify-center h-24 mb-6">
+                <div className="flex items-center justify-center h-20 sm:h-22 md:h-24 mb-4 sm:mb-5 md:mb-6">
                   {logoUrl ? (
                     <Image
                       src={logoUrl}
                       alt={tech.name}
                       width={80}
                       height={80}
-                      className="object-contain tech-logo"
+                      className="object-contain tech-logo w-16 h-16 sm:w-18 sm:h-18 md:w-20 md:h-20"
                     />
                   ) : (
                     <div
-                      className={`text-5xl font-bold ${
+                      className={`text-4xl sm:text-5xl font-bold ${
                         theme === 'dark' ? 'text-white/10' : 'text-black/10'
                       }`}
                     >
@@ -160,7 +160,7 @@ export default function HorizontalTechnologies({
 
                 {/* Tech Name */}
                 <h3
-                  className={`text-xl font-bold text-center mb-2 text-hover-zoom ${
+                  className={`text-lg sm:text-xl font-bold text-center mb-2 text-hover-zoom ${
                     theme === 'dark' ? 'text-white' : 'text-black'
                   }`}
                   style={{ letterSpacing: '-0.02em' }}

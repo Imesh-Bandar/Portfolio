@@ -131,7 +131,7 @@ export default function HorizontalProjects({ projects, theme }: HorizontalProjec
           {projects.map((project, index) => (
             <Link href={`/projects/${project._id}`} key={`${project._id}-${index}`}>
               <motion.div
-                className={`group relative flex-shrink-0 w-[400px] md:w-[500px] h-[600px] rounded-2xl overflow-hidden cursor-pointer ${
+                className={`group relative flex-shrink-0 w-[320px] sm:w-[380px] md:w-[450px] lg:w-[500px] h-[500px] sm:h-[550px] md:h-[600px] rounded-2xl overflow-hidden cursor-pointer ${
                   theme === 'dark' ? 'bg-[#141414]' : 'bg-white'
                 }`}
                 style={{ scrollSnapAlign: 'start' }}
@@ -139,7 +139,7 @@ export default function HorizontalProjects({ projects, theme }: HorizontalProjec
                 transition={{ duration: 0.4 }}
               >
                 {/* Project Image */}
-                <div className="relative h-[400px] overflow-hidden">
+                <div className="relative h-[280px] sm:h-[350px] md:h-[400px] overflow-hidden">
                   {project.imageUrl ? (
                     <img
                       src={project.imageUrl}
@@ -169,14 +169,14 @@ export default function HorizontalProjects({ projects, theme }: HorizontalProjec
                 </div>
 
                 {/* Project Info */}
-                <div className="p-8">
-                  <h3 className={`text-2xl md:text-3xl font-bold mb-3 text-hover-zoom ${
+                <div className="p-5 sm:p-6 md:p-8">
+                  <h3 className={`text-xl sm:text-2xl md:text-3xl font-bold mb-2 sm:mb-3 text-hover-zoom ${
                     theme === 'dark' ? 'text-white' : 'text-black'
                   }`} style={{ letterSpacing: '-0.02em' }}>
                     {project.title}
                   </h3>
 
-                  <p className={`text-sm mb-6 line-clamp-2 ${
+                  <p className={`text-xs sm:text-sm mb-4 sm:mb-6 line-clamp-2 ${
                     theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
                   }`}>
                     {project.description}

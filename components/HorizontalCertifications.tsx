@@ -126,7 +126,7 @@ export default function HorizontalCertifications({
           {certifications.map((cert, index) => (
             <motion.div
               key={`${cert._id}-${index}`}
-              className={`flex-shrink-0 w-[350px] rounded-2xl overflow-hidden cursor-pointer border ${
+              className={`flex-shrink-0 w-[280px] sm:w-[320px] md:w-[350px] rounded-2xl overflow-hidden cursor-pointer border ${
                 theme === 'dark' ? 'bg-[#141414] border-gray-800' : 'bg-white border-gray-200'
               }`}
               style={{ scrollSnapAlign: 'start' }}
@@ -135,7 +135,7 @@ export default function HorizontalCertifications({
               onClick={() => cert.credentialUrl && window.open(cert.credentialUrl, '_blank')}
             >
               {/* Certificate Image */}
-              <div className="relative h-[250px] overflow-hidden">
+              <div className="relative h-[200px] sm:h-[230px] md:h-[250px] overflow-hidden">
                 {cert.imageUrl ? (
                   <Image
                     src={cert.imageUrl}
@@ -158,9 +158,9 @@ export default function HorizontalCertifications({
               </div>
 
               {/* Certificate Info */}
-              <div className="p-6 flex flex-col h-[calc(100%-250px)]">
+              <div className="p-4 sm:p-5 md:p-6 flex flex-col h-[calc(100%-200px)] sm:h-[calc(100%-230px)] md:h-[calc(100%-250px)]">
                 <h3
-                  className={`text-xl font-bold mb-2 line-clamp-2 text-hover-zoom ${
+                  className={`text-lg sm:text-xl font-bold mb-2 line-clamp-2 text-hover-zoom ${
                     theme === 'dark' ? 'text-white' : 'text-black'
                   }`}
                   style={{ letterSpacing: '-0.02em' }}

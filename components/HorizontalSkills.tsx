@@ -134,7 +134,7 @@ export default function HorizontalSkills({ skills, theme }: HorizontalSkillsProp
           {skills.map((skill, index) => (
             <motion.div
               key={`${skill._id}-${index}`}
-              className={`flex-shrink-0 w-[300px] p-8 rounded-2xl border transition-all ${
+              className={`flex-shrink-0 w-[260px] sm:w-[280px] md:w-[300px] p-6 sm:p-8 rounded-2xl border transition-all ${
                 theme === 'dark'
                   ? 'bg-[#141414] border-gray-800 hover:border-gray-700'
                   : 'bg-white border-gray-200 hover:border-gray-300'
@@ -156,7 +156,7 @@ export default function HorizontalSkills({ skills, theme }: HorizontalSkillsProp
 
               {/* Skill Name */}
               <h3
-                className={`text-2xl font-bold mb-3 text-hover-zoom ${
+                className={`text-xl sm:text-2xl font-bold mb-3 text-hover-zoom ${
                   theme === 'dark' ? 'text-white' : 'text-black'
                 }`}
                 style={{ letterSpacing: '-0.02em' }}

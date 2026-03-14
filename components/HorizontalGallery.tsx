@@ -77,21 +77,21 @@ export default function HorizontalGallery({ gallery, theme, onItemClick }: Horiz
       <div className="relative">
         <div ref={scrollRef} className="flex gap-6 overflow-x-auto hide-scrollbar px-6" style={{ scrollSnapType: 'none' }} onMouseEnter={() => setIsPaused(true)} onMouseLeave={() => setIsPaused(false)}>
           {gallery.map((item, index) => (
-            <motion.div key={`${item._id}-${index}`} className={`group relative flex-shrink-0 w-[400px] h-[500px] rounded-2xl overflow-hidden cursor-pointer ${theme === 'dark' ? 'bg-[#141414]' : 'bg-white'}`} style={{ scrollSnapAlign: 'start' }} whileHover={{ scale: 1.02, y: -5 }} transition={{ duration: 0.4 }} onClick={() => onItemClick(item)}>
+            <motion.div key={`${item._id}-${index}`} className={`group relative flex-shrink-0 w-[300px] sm:w-[340px] md:w-[380px] lg:w-[400px] h-[400px] sm:h-[440px] md:h-[480px] lg:h-[500px] rounded-2xl overflow-hidden cursor-pointer ${theme === 'dark' ? 'bg-[#141414]' : 'bg-white'}`} style={{ scrollSnapAlign: 'start' }} whileHover={{ scale: 1.02, y: -5 }} transition={{ duration: 0.4 }} onClick={() => onItemClick(item)}>
               <div className="relative h-full">
                 {item.type === 'photo' && item.imageUrl ? (
                   <Image src={item.imageUrl} alt={item.title} fill className="object-cover transition-transform duration-700 group-hover:scale-110" />
                 ) : item.type === 'video' ? (
-                  <div className={`w-full h-full flex items-center justify-center ${theme === 'dark' ? 'bg-[#1a1a1a]' : 'bg-gray-100'}`}><FiPlay size={80} className={theme === 'dark' ? 'text-gray-600' : 'text-gray-400'} /></div>
+                  <div className={`w-full h-full flex items-center justify-center ${theme === 'dark' ? 'bg-[#1a1a1a]' : 'bg-gray-100'}`}><FiPlay size={60} className={`${theme === 'dark' ? 'text-gray-600' : 'text-gray-400'} sm:w-20 sm:h-20`} /></div>
                 ) : (
-                  <div className={`w-full h-full flex items-center justify-center ${theme === 'dark' ? 'bg-[#1a1a1a]' : 'bg-gray-100'}`}><FiImage size={80} className={theme === 'dark' ? 'text-gray-700' : 'text-gray-300'} /></div>
+                  <div className={`w-full h-full flex items-center justify-center ${theme === 'dark' ? 'bg-[#1a1a1a]' : 'bg-gray-100'}`}><FiImage size={60} className={`${theme === 'dark' ? 'text-gray-700' : 'text-gray-300'} sm:w-20 sm:h-20`} /></div>
                 )}
-                <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${theme === 'dark' ? 'bg-black/60' : 'bg-white/60'} backdrop-blur-sm flex flex-col items-center justify-center p-6`}>
-                  <h3 className={`text-2xl font-bold mb-2 text-center text-hover-zoom ${theme === 'dark' ? 'text-white' : 'text-black'}`} style={{ letterSpacing: '-0.02em' }}>{item.title}</h3>
-                  {item.description && <p className={`text-sm text-center line-clamp-3 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>{item.description}</p>}
+                <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 ${theme === 'dark' ? 'bg-black/60' : 'bg-white/60'} backdrop-blur-sm flex flex-col items-center justify-center p-4 sm:p-5 md:p-6`}>
+                  <h3 className={`text-xl sm:text-2xl font-bold mb-2 text-center text-hover-zoom ${theme === 'dark' ? 'text-white' : 'text-black'}`} style={{ letterSpacing: '-0.02em' }}>{item.title}</h3>
+                  {item.description && <p className={`text-xs sm:text-sm text-center line-clamp-3 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>{item.description}</p>}
                 </div>
-                <div className="absolute top-4 right-4">
-                  <span className={`px-3 py-1 rounded-full text-xs uppercase tracking-wider ${theme === 'dark' ? 'bg-black/60 text-white' : 'bg-white/60 text-black'} backdrop-blur-sm`}>{item.type}</span>
+                <div className="absolute top-3 sm:top-4 right-3 sm:right-4">
+                  <span className={`px-2 sm:px-3 py-1 rounded-full text-xs uppercase tracking-wider ${theme === 'dark' ? 'bg-black/60 text-white' : 'bg-white/60 text-black'} backdrop-blur-sm`}>{item.type}</span>
                 </div>
               </div>
             </motion.div>

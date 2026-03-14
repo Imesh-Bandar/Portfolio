@@ -135,7 +135,7 @@ export default function HorizontalEducation({
           {education.map((edu, index) => (
             <motion.div
               key={`${edu._id}-${index}`}
-              className={`flex-shrink-0 w-[450px] p-8 rounded-2xl border ${
+              className={`flex-shrink-0 w-[340px] sm:w-[380px] md:w-[420px] lg:w-[450px] p-5 sm:p-6 md:p-7 lg:p-8 rounded-2xl border ${
                 theme === 'dark'
                   ? 'bg-[#141414] border-gray-800'
                   : 'bg-white border-gray-200'
@@ -145,9 +145,9 @@ export default function HorizontalEducation({
               transition={{ duration: 0.4 }}
             >
               {/* Education Icon */}
-              <div className="mb-6">
+              <div className="mb-5 sm:mb-6">
                 <div
-                  className={`inline-flex items-center justify-center w-16 h-16 rounded-2xl ${
+                  className={`inline-flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 rounded-2xl ${
                     theme === 'dark' ? 'bg-[#1a1a1a]' : 'bg-gray-100'
                   }`}
                 >
@@ -160,7 +160,7 @@ export default function HorizontalEducation({
 
               {/* Degree */}
               <h3
-                className={`text-2xl font-bold mb-2 text-hover-zoom ${
+                className={`text-xl sm:text-2xl font-bold mb-2 text-hover-zoom ${
                   theme === 'dark' ? 'text-white' : 'text-black'
                 }`}
                 style={{ letterSpacing: '-0.02em' }}
@@ -171,7 +171,7 @@ export default function HorizontalEducation({
               {/* Field of Study */}
               {edu.fieldOfStudy && (
                 <p
-                  className={`text-lg mb-3 ${
+                  className={`text-base sm:text-lg mb-3 ${
                     theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
                   }`}
                 >
