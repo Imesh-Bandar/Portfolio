@@ -1,36 +1,101 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Portfolio Website with Admin Dashboard
+
+A modern, full-stack portfolio website built with Next.js 14, MongoDB, and Tailwind CSS. Features a complete admin dashboard for managing projects, skills, technologies, certifications, and education.
+
+## Features
+
+### Portfolio Frontend
+- **Hero Section** - Professional introduction with social links
+- **About Section** - Brief bio and current role
+- **Tech Stack** - Visual display of technologies
+- **Skills** - Categorized skills with proficiency levels
+- **Projects** - Showcase featured projects with details
+- **Education** - Academic background timeline
+- **Certifications** - Professional certifications display
+- **Responsive Design** - Mobile-first, works on all devices
+
+### Admin Dashboard
+- **Authentication** - Secure login system with JWT
+- **Projects Management** - Full CRUD operations
+- **Skills Management** - Add/edit skills with categories and levels
+- **Technologies Management** - Manage your tech stack
+- **Certifications Management** - Track professional certifications
+- **Education Management** - Manage academic records
+- **Dashboard Overview** - Quick stats and navigation
+
+## Tech Stack
+
+- **Framework**: Next.js 14 (App Router)
+- **Language**: TypeScript
+- **Database**: MongoDB with Mongoose
+- **Authentication**: JWT (JSON Web Tokens)
+- **Styling**: Tailwind CSS
+- **Icons**: React Icons (Feather Icons)
+- **Notifications**: React Hot Toast
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- Node.js 18+ installed
+- MongoDB installed locally OR MongoDB Atlas account
+- npm or yarn package manager
+
+### Installation
+
+1. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+2. **Set up environment variables**
+   ```bash
+   cp .env.local.example .env.local
+   ```
+
+   Edit `.env.local` and update:
+   ```env
+   MONGODB_URI=mongodb://localhost:27017/portfolio
+   JWT_SECRET=your-secret-key-here
+   ```
+
+3. **Run the development server**
+   ```bash
+   npm run dev
+   ```
+
+4. **Open your browser**
+   - Portfolio: http://localhost:3000
+   - Admin: http://localhost:3000/admin/login
+
+### Create Admin Account
+
+Use MongoDB to create an admin user (password: admin123):
+
+```javascript
+use portfolio
+
+db.users.insertOne({
+  email: "admin@example.com",
+  password: "$2a$10$rBV2kYe.Rm8lQG7swnXw8.DH2M3Y0y9VlYFz5qpZmVkXKQmXqxqgO",
+  name: "Admin User",
+  createdAt: new Date(),
+  updatedAt: new Date()
+})
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Deployment
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Deploy to Vercel:
+1. Push to GitHub
+2. Import to Vercel
+3. Add environment variables
+4. Deploy
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## License
 
-## Learn More
+MIT License
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Built with ❤️ by Imesh Bandara
