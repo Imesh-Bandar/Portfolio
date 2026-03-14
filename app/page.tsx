@@ -21,6 +21,7 @@ import { getTechLogoUrl } from '@/lib/utils/techLogos';
 import DetailModal from '@/components/DetailModal';
 import CustomCursor from '@/components/CustomCursor';
 import SectionTransition from '@/components/SectionTransition';
+import WaveDivider from '@/components/WaveDivider';
 
 export default function Home() {
   const { theme, toggleTheme } = useTheme();
@@ -563,8 +564,9 @@ export default function Home() {
         </section>
 
         {/* About Section */}
-        <SectionTransition id="about" className="py-32 relative" animationType="circle-expand" sectionName="About Me">
-          <div className="max-w-7xl mx-auto px-6">
+        <SectionTransition id="about" className="py-32 relative overflow-hidden" animationType="circle-expand" sectionName="About Me">
+          <DoodleBackground fixed={false} opacity={0.15} doodleCount={15} />
+          <div className="max-w-7xl mx-auto px-6 relative z-10">
             <div className="max-w-3xl mx-auto">
               <motion.h2
                 className={`text-6xl md:text-7xl lg:text-8xl font-bold mb-16 text-center ${theme === 'dark' ? 'text-white' : 'text-black'}`}
@@ -646,33 +648,54 @@ export default function Home() {
           </div>
         </SectionTransition>
 
+        {/* Wave Divider */}
+        <WaveDivider theme={theme} variant="bottom" />
+
         {/* Technologies Section */}
         {data.technologies.length > 0 && (
-          <SectionTransition animationType="wave-in" sectionName="Technologies">
-            <HorizontalTechnologies
+          <SectionTransition animationType="wave-in" sectionName="Technologies" className="relative overflow-hidden">
+            <DoodleBackground fixed={false} opacity={0.1} doodleCount={12} />
+            <div className="relative z-10">
+              <HorizontalTechnologies
               technologies={data.technologies}
               theme={theme}
               getTechLogoUrl={getTechLogoUrl}
-            />
+              />
+            </div>
           </SectionTransition>
         )}
+
+        {/* Wave Divider */}
+        <WaveDivider theme={theme} variant="bottom" />
 
         {/* Skills Section */}
         {data.skills.length > 0 && (
-          <SectionTransition animationType="flip-in" sectionName="Skills">
-            <HorizontalSkills skills={data.skills} theme={theme} />
+          <SectionTransition animationType="flip-in" sectionName="Skills" className="relative overflow-hidden">
+            <DoodleBackground fixed={false} opacity={0.1} doodleCount={12} />
+            <div className="relative z-10">
+              <HorizontalSkills skills={data.skills} theme={theme} />
+            </div>
           </SectionTransition>
         )}
 
+        {/* Wave Divider */}
+        <WaveDivider theme={theme} variant="bottom" />
+
         {/* Horizontal Scrolling Projects Section */}
         {data.projects.length > 0 && data.projects.filter((p: any) => p.isFeatured).length > 0 && (
-          <SectionTransition animationType="zoom-rotate" id="work" sectionName="Projects">
-            <HorizontalProjects
+          <SectionTransition animationType="zoom-rotate" id="work" sectionName="Projects" className="relative overflow-hidden">
+            <DoodleBackground fixed={false} opacity={0.12} doodleCount={15} />
+            <div className="relative z-10">
+              <HorizontalProjects
               projects={data.projects.filter((p: any) => p.isFeatured)}
               theme={theme}
-            />
+              />
+            </div>
           </SectionTransition>
         )}
+
+        {/* Wave Divider */}
+        <WaveDivider theme={theme} variant="bottom" />
 
         {/* Work Experience Section */}
         {data.workExperiences.length > 0 && (
@@ -681,6 +704,9 @@ export default function Home() {
           </SectionTransition>
         )}
 
+        {/* Wave Divider */}
+        <WaveDivider theme={theme} variant="bottom" />
+
         {/* Education Section */}
         {data.education.length > 0 && (
           <SectionTransition animationType="slide-left" sectionName="Education">
@@ -688,12 +714,18 @@ export default function Home() {
           </SectionTransition>
         )}
 
+        {/* Wave Divider */}
+        <WaveDivider theme={theme} variant="bottom" />
+
         {/* Certifications Section */}
         {data.certifications.length > 0 && (
           <SectionTransition animationType="blur-in" sectionName="Certifications">
             <HorizontalCertifications certifications={data.certifications} theme={theme} />
           </SectionTransition>
         )}
+
+        {/* Wave Divider */}
+        <WaveDivider theme={theme} variant="bottom" />
 
         {/* Photo Gallery Section */}
         {data.gallery.length > 0 && (
@@ -706,6 +738,9 @@ export default function Home() {
           </SectionTransition>
         )}
 
+        {/* Wave Divider */}
+        <WaveDivider theme={theme} variant="bottom" />
+
         {/* Blog Section */}
         {data.blogs.length > 0 && (
           <SectionTransition animationType="blur-in" sectionName="Blog">
@@ -717,9 +752,13 @@ export default function Home() {
           </SectionTransition>
         )}
 
+        {/* Wave Divider */}
+        <WaveDivider theme={theme} variant="bottom" />
+
         {/* Contact Section */}
-        <SectionTransition id="contact" className={`py-24 relative ${theme === 'dark' ? 'bg-[#C1BFBE]/5' : 'bg-gray-50/50'}`} animationType="scale-up" sectionName="Get In Touch">
-          <div className="max-w-4xl mx-auto px-6 text-center">
+        <SectionTransition id="contact" className={`py-24 relative overflow-hidden ${theme === 'dark' ? 'bg-[#C1BFBE]/5' : 'bg-gray-50/50'}`} animationType="scale-up" sectionName="Get In Touch">
+          <DoodleBackground fixed={false} opacity={0.08} doodleCount={10} />
+          <div className="max-w-4xl mx-auto px-6 text-center relative z-10">
             <h2 className={`text-4xl md:text-5xl font-bold mb-6 ${theme === 'dark' ? 'text-white' : 'text-black'}`}>
               Let&apos;s Work Together
             </h2>

@@ -4,7 +4,17 @@ import { useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { useTheme } from '@/lib/context/ThemeContext';
 
-export default function DoodleBackground() {
+interface DoodleBackgroundProps {
+  fixed?: boolean;
+  opacity?: number;
+  doodleCount?: number;
+}
+
+export default function DoodleBackground({
+  fixed = true,
+  opacity,
+  doodleCount = 30
+}: DoodleBackgroundProps = {}) {
   const { theme } = useTheme();
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -25,7 +35,6 @@ export default function DoodleBackground() {
 
     // Doodle elements
     const doodles: any[] = [];
-    const doodleCount = 30;
 
     // Create doodles with theme-aware colors
     const getGrayValue = () => {
@@ -269,23 +278,27 @@ export default function DoodleBackground() {
     };
   }, [theme]);
 
+  const defaultOpacity = theme === 'dark' ? 0.4 : 0.15;
+  const textOpacity = theme === 'dark' ? 0.15 : 0.08;
+
   return (
     <>
       <canvas
         ref={canvasRef}
-        className="fixed top-0 left-0 w-full h-full pointer-events-none z-0"
+        className={`${fixed ? 'fixed' : 'absolute'} top-0 left-0 w-full h-full pointer-events-none z-0`}
         style={{
-          opacity: theme === 'dark' ? 0.4 : 0.15
+          opacity: opacity !== undefined ? opacity : defaultOpacity
         }}
       />
 
       {/* Floating developer-themed text elements - More subtle */}
-      <div
-        className="fixed inset-0 overflow-hidden pointer-events-none z-0"
-        style={{
-          opacity: theme === 'dark' ? 0.15 : 0.08
-        }}
-      >
+      {fixed && (
+        <div
+          className="fixed inset-0 overflow-hidden pointer-events-none z-0"
+          style={{
+            opacity: textOpacity
+          }}
+        >
         <motion.div
           className="absolute text-6xl font-mono font-bold text-gray-700 opacity-5"
           style={{ top: '10%', left: '5%' }}
@@ -368,6 +381,7 @@ export default function DoodleBackground() {
           $
         </motion.div>
       </div>
+      )}
     </>
   );
 }
