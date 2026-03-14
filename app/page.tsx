@@ -802,13 +802,6 @@ export default function Home() {
                 <a href="https://wa.me/94704394523" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-[#25D366] transition-colors">
                   <FaWhatsapp size={20} />
                 </a>
-                <Link href="/admin" className={`transition-colors text-sm ${
-                  theme === 'dark'
-                    ? 'text-gray-500 hover:text-gray-300'
-                    : 'text-gray-500 hover:text-gray-700'
-                }`}>
-                  Admin
-                </Link>
               </div>
             </div>
           </div>
