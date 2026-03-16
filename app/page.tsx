@@ -115,7 +115,7 @@ export default function Home() {
 
   if (loading) {
     return (
-      <div className={`min-h-screen flex items-center justify-center ${theme === 'dark' ? 'bg-[#0C0C08]' : 'bg-[#C1BFBE]/10'}`}>
+      <div className={`min-h-screen flex items-center justify-center ${theme === 'dark' ? 'bg-[#0a0a0a]' : 'bg-[#fafafa]'}`}>
         <div className="flex flex-col items-center gap-4">
           <div className={`w-16 h-16 border-4 border-t-transparent rounded-full animate-spin ${theme === 'dark' ? 'border-gray-600' : 'border-gray-400'}`}></div>
           <p className={`font-medium ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>Loading Portfolio...</p>
