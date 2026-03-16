@@ -25,6 +25,7 @@ export default function HorizontalTechnologies({
 }: HorizontalTechnologiesProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [isPaused, setIsPaused] = useState(false);
+  const [flippedCards, setFlippedCards] = useState<Set<string>>(new Set());
 
   const scroll = (direction: 'left' | 'right') => {
     if (scrollRef.current) {
@@ -34,6 +35,18 @@ export default function HorizontalTechnologies({
         behavior: 'smooth',
       });
     }
+  };
+
+  const toggleFlip = (id: string) => {
+    setFlippedCards(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(id)) {
+        newSet.delete(id);
+      } else {
+        newSet.add(id);
+      }
+      return newSet;
+    });
   };
 
   // Auto-scroll functionality
@@ -88,7 +101,7 @@ export default function HorizontalTechnologies({
             Tech Stack
           </motion.h2>
           {/* Arrow Buttons */}
-          <div className="flex gap-3 mb-4">
+          <div className="flex gap-3 mb-4 relative z-10">
             <button
               onClick={() => scroll('left')}
               className={`w-12 h-12 rounded-full border flex items-center justify-center transition-all hover:scale-110 ${
@@ -124,59 +137,110 @@ export default function HorizontalTechnologies({
         >
           {technologies.map((tech, index) => {
             const logoUrl = getTechLogoUrl(tech.name, tech.iconUrl);
+            const isFlipped = flippedCards.has(tech._id);
 
             return (
-              <motion.div
+              <div
                 key={`${tech._id}-${index}`}
-                className={`flex-shrink-0 w-[240px] sm:w-[260px] md:w-[280px] p-6 sm:p-7 md:p-8 rounded-2xl border transition-all ${
-                  theme === 'dark'
-                    ? 'bg-[#141414] border-gray-800 hover:border-gray-700'
-                    : 'bg-white border-gray-200 hover:border-gray-300'
-                }`}
-                style={{ scrollSnapAlign: 'start' }}
-                whileHover={{ scale: 1.05, y: -8 }}
-                transition={{ duration: 0.3 }}
+                className="flex-shrink-0 w-[240px] sm:w-[260px] md:w-[280px] h-[240px] sm:h-[260px]"
+                style={{ perspective: '1000px', scrollSnapAlign: 'start' }}
               >
-                {/* Tech Logo */}
-                <div className="flex items-center justify-center h-20 sm:h-22 md:h-24 mb-4 sm:mb-5 md:mb-6">
-                  {logoUrl ? (
-                    <Image
-                      src={logoUrl}
-                      alt={tech.name}
-                      width={80}
-                      height={80}
-                      className="object-contain tech-logo w-16 h-16 sm:w-18 sm:h-18 md:w-20 md:h-20"
-                    />
-                  ) : (
-                    <div
-                      className={`text-4xl sm:text-5xl font-bold ${
-                        theme === 'dark' ? 'text-white/10' : 'text-black/10'
+                <motion.div
+                  className="relative w-full h-full cursor-pointer"
+                  onClick={() => toggleFlip(tech._id)}
+                  whileHover={{ scale: 1.05, y: -8 }}
+                  transition={{ duration: 0.3 }}
+                  style={{ transformStyle: 'preserve-3d' }}
+                  animate={{ rotateY: isFlipped ? 180 : 0 }}
+                >
+                  {/* Front Side */}
+                  <div
+                    className={`absolute inset-0 p-6 sm:p-7 md:p-8 rounded-2xl border ${
+                      theme === 'dark'
+                        ? 'bg-[#141414] border-gray-800'
+                        : 'bg-white border-gray-200'
+                    }`}
+                    style={{
+                      backfaceVisibility: 'hidden',
+                      WebkitBackfaceVisibility: 'hidden',
+                    }}
+                  >
+                    {/* Tech Logo */}
+                    <div className="flex items-center justify-center h-20 sm:h-22 md:h-24 mb-4">
+                      {logoUrl ? (
+                        <Image
+                          src={logoUrl}
+                          alt={tech.name}
+                          width={80}
+                          height={80}
+                          className="object-contain tech-logo w-16 h-16 sm:w-18 sm:h-18 md:w-20 md:h-20"
+                        />
+                      ) : (
+                        <div
+                          className={`text-4xl sm:text-5xl font-bold ${
+                            theme === 'dark' ? 'text-white/10' : 'text-black/10'
+                          }`}
+                        >
+                          {tech.name.charAt(0)}
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Tech Name */}
+                    <h3
+                      className={`text-lg sm:text-xl font-bold text-center ${
+                        theme === 'dark' ? 'text-white' : 'text-black'
+                      }`}
+                      style={{ letterSpacing: '-0.02em' }}
+                    >
+                      {tech.name}
+                    </h3>
+
+                    {/* Click to flip indicator */}
+                    <div className={`absolute bottom-4 right-4 text-xs ${
+                      theme === 'dark' ? 'text-gray-600' : 'text-gray-400'
+                    }`}>
+                      →
+                    </div>
+                  </div>
+
+                  {/* Back Side */}
+                  <div
+                    className={`absolute inset-0 p-6 sm:p-7 md:p-8 rounded-2xl border flex flex-col items-center justify-center ${
+                      theme === 'dark'
+                        ? 'bg-[#141414] border-gray-800'
+                        : 'bg-white border-gray-200'
+                    }`}
+                    style={{
+                      backfaceVisibility: 'hidden',
+                      WebkitBackfaceVisibility: 'hidden',
+                      transform: 'rotateY(180deg)',
+                    }}
+                  >
+                    <h4 className={`text-lg font-bold mb-3 text-center ${
+                      theme === 'dark' ? 'text-white' : 'text-black'
+                    }`}>
+                      {tech.name}
+                    </h4>
+
+                    {/* Tech Category */}
+                    <p
+                      className={`text-xs uppercase tracking-[0.2em] text-center ${
+                        theme === 'dark' ? 'text-gray-500' : 'text-gray-500'
                       }`}
                     >
-                      {tech.name.charAt(0)}
+                      {tech.category}
+                    </p>
+
+                    {/* Click to flip back indicator */}
+                    <div className={`absolute bottom-4 left-4 text-xs ${
+                      theme === 'dark' ? 'text-gray-600' : 'text-gray-400'
+                    }`}>
+                      ←
                     </div>
-                  )}
-                </div>
-
-                {/* Tech Name */}
-                <h3
-                  className={`text-lg sm:text-xl font-bold text-center mb-2 text-hover-zoom ${
-                    theme === 'dark' ? 'text-white' : 'text-black'
-                  }`}
-                  style={{ letterSpacing: '-0.02em' }}
-                >
-                  {tech.name}
-                </h3>
-
-                {/* Tech Category */}
-                <p
-                  className={`text-xs uppercase tracking-[0.2em] text-center ${
-                    theme === 'dark' ? 'text-gray-600' : 'text-gray-400'
-                  }`}
-                >
-                  {tech.category}
-                </p>
-              </motion.div>
+                  </div>
+                </motion.div>
+              </div>
             );
           })}
         </div>

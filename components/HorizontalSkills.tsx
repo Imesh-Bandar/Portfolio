@@ -21,6 +21,7 @@ interface HorizontalSkillsProps {
 export default function HorizontalSkills({ skills, theme }: HorizontalSkillsProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [isPaused, setIsPaused] = useState(false);
+  const [flippedCards, setFlippedCards] = useState<Set<string>>(new Set());
 
   const scroll = (direction: 'left' | 'right') => {
     if (scrollRef.current) {
@@ -30,6 +31,18 @@ export default function HorizontalSkills({ skills, theme }: HorizontalSkillsProp
         behavior: 'smooth',
       });
     }
+  };
+
+  const toggleFlip = (id: string) => {
+    setFlippedCards(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(id)) {
+        newSet.delete(id);
+      } else {
+        newSet.add(id);
+      }
+      return newSet;
+    });
   };
 
   // Auto-scroll functionality
@@ -97,7 +110,7 @@ export default function HorizontalSkills({ skills, theme }: HorizontalSkillsProp
             Skills & Expertise
           </motion.h2>
           {/* Arrow Buttons */}
-          <div className="flex gap-3 mb-4">
+          <div className="flex gap-3 mb-4 relative z-10">
             <button
               onClick={() => scroll('left')}
               className={`w-12 h-12 rounded-full border flex items-center justify-center transition-all hover:scale-110 ${
@@ -131,81 +144,129 @@ export default function HorizontalSkills({ skills, theme }: HorizontalSkillsProp
           onMouseEnter={() => setIsPaused(true)}
           onMouseLeave={() => setIsPaused(false)}
         >
-          {skills.map((skill, index) => (
-            <motion.div
-              key={`${skill._id}-${index}`}
-              className={`flex-shrink-0 w-[260px] sm:w-[280px] md:w-[300px] p-6 sm:p-8 rounded-2xl border transition-all ${
-                theme === 'dark'
-                  ? 'bg-[#141414] border-gray-800 hover:border-gray-700'
-                  : 'bg-white border-gray-200 hover:border-gray-300'
-              }`}
-              style={{ scrollSnapAlign: 'start' }}
-              whileHover={{ scale: 1.02, y: -5 }}
-              transition={{ duration: 0.3 }}
-            >
-              {/* Skill Category */}
-              <div className="mb-4">
-                <span
-                  className={`text-xs uppercase tracking-[0.2em] ${
-                    theme === 'dark' ? 'text-gray-600' : 'text-gray-400'
-                  }`}
-                >
-                  {skill.category}
-                </span>
-              </div>
+          {skills.map((skill, index) => {
+            const isFlipped = flippedCards.has(skill._id);
 
-              {/* Skill Name */}
-              <h3
-                className={`text-xl sm:text-2xl font-bold mb-3 text-hover-zoom ${
-                  theme === 'dark' ? 'text-white' : 'text-black'
-                }`}
-                style={{ letterSpacing: '-0.02em' }}
+            return (
+              <div
+                key={`${skill._id}-${index}`}
+                className="flex-shrink-0 w-[260px] sm:w-[280px] md:w-[300px] h-[280px] sm:h-[300px]"
+                style={{ perspective: '1000px', scrollSnapAlign: 'start' }}
               >
-                {skill.name}
-              </h3>
-
-              {/* Level */}
-              <div className="mt-auto">
-                <div className="flex justify-between items-center mb-2">
-                  <p
-                    className={`text-sm font-medium ${getLevelColor(
-                      skill.level
-                    )}`}
-                  >
-                    {skill.level}
-                  </p>
-                  {skill.percentage !== undefined && (
-                    <span
-                      className={`text-xs font-bold ${
-                        theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
-                      }`}
-                    >
-                      {skill.percentage}%
-                    </span>
-                  )}
-                </div>
-
-                {/* Progress Bar */}
-                {skill.percentage !== undefined && (
+                <motion.div
+                  className="relative w-full h-full cursor-pointer"
+                  onClick={() => toggleFlip(skill._id)}
+                  whileHover={{ scale: 1.02, y: -5 }}
+                  transition={{ duration: 0.3 }}
+                  style={{ transformStyle: 'preserve-3d' }}
+                  animate={{ rotateY: isFlipped ? 180 : 0 }}
+                >
+                  {/* Front Side */}
                   <div
-                    className={`w-full h-2 rounded-full overflow-hidden ${
-                      theme === 'dark' ? 'bg-gray-800' : 'bg-gray-200'
+                    className={`absolute inset-0 p-6 sm:p-8 rounded-2xl border ${
+                      theme === 'dark'
+                        ? 'bg-[#141414] border-gray-800'
+                        : 'bg-white border-gray-200'
                     }`}
+                    style={{
+                      backfaceVisibility: 'hidden',
+                      WebkitBackfaceVisibility: 'hidden',
+                    }}
                   >
-                    <motion.div
-                      className={`h-full rounded-full ${
-                        theme === 'dark' ? 'bg-gray-400' : 'bg-gray-700'
+                    {/* Skill Category */}
+                    <div className="mb-4">
+                      <span
+                        className={`text-xs uppercase tracking-[0.2em] ${
+                          theme === 'dark' ? 'text-gray-600' : 'text-gray-400'
+                        }`}
+                      >
+                        {skill.category}
+                      </span>
+                    </div>
+
+                    {/* Skill Name */}
+                    <h3
+                      className={`text-xl sm:text-2xl font-bold mb-3 ${
+                        theme === 'dark' ? 'text-white' : 'text-black'
                       }`}
-                      initial={{ width: 0 }}
-                      whileInView={{ width: `${skill.percentage}%` }}
-                      viewport={{ once: true }}
-                      transition={{ duration: 1, ease: 'easeOut' }}
-                    />
+                      style={{ letterSpacing: '-0.02em' }}
+                    >
+                      {skill.name}
+                    </h3>
+
+                    {/* Level */}
+                    <p className={`text-sm font-medium ${getLevelColor(skill.level)}`}>
+                      {skill.level}
+                    </p>
+
+                    {/* Click to flip indicator */}
+                    <div className={`absolute bottom-6 right-6 text-xs ${
+                      theme === 'dark' ? 'text-gray-600' : 'text-gray-400'
+                    }`}>
+                      Click to flip →
+                    </div>
                   </div>
-                )}
+
+                  {/* Back Side */}
+                  <div
+                    className={`absolute inset-0 p-6 sm:p-8 rounded-2xl border ${
+                      theme === 'dark'
+                        ? 'bg-[#141414] border-gray-800'
+                        : 'bg-white border-gray-200'
+                    }`}
+                    style={{
+                      backfaceVisibility: 'hidden',
+                      WebkitBackfaceVisibility: 'hidden',
+                      transform: 'rotateY(180deg)',
+                    }}
+                  >
+                    <h4 className={`text-lg font-bold mb-4 ${
+                      theme === 'dark' ? 'text-white' : 'text-black'
+                    }`}>
+                      {skill.name}
+                    </h4>
+
+                    <div className="mb-4">
+                      <p className={`text-sm font-medium mb-2 ${getLevelColor(skill.level)}`}>
+                        Level: {skill.level}
+                      </p>
+                      {skill.percentage !== undefined && (
+                        <span className={`text-xs font-bold ${
+                          theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
+                        }`}>
+                          Proficiency: {skill.percentage}%
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Progress Bar */}
+                    {skill.percentage !== undefined && (
+                      <div className={`w-full h-2 rounded-full overflow-hidden ${
+                        theme === 'dark' ? 'bg-gray-800' : 'bg-gray-200'
+                      }`}>
+                        <motion.div
+                          className={`h-full rounded-full ${
+                            theme === 'dark' ? 'bg-gray-400' : 'bg-gray-700'
+                          }`}
+                          initial={{ width: 0 }}
+                          whileInView={{ width: `${skill.percentage}%` }}
+                          viewport={{ once: true }}
+                          transition={{ duration: 1, ease: 'easeOut' }}
+                        />
+                      </div>
+                    )}
+
+                    {/* Click to flip back indicator */}
+                    <div className={`absolute bottom-6 right-6 text-xs ${
+                      theme === 'dark' ? 'text-gray-600' : 'text-gray-400'
+                    }`}>
+                      ← Click to flip back
+                    </div>
+                  </div>
+                </motion.div>
               </div>
-            </motion.div>
-          ))}
+            );
+          })}
         </div>
 
         {/* Gradient Overlays */}

@@ -28,6 +28,7 @@ export default function HorizontalEducation({
 }: HorizontalEducationProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [isPaused, setIsPaused] = useState(false);
+  const [flippedCards, setFlippedCards] = useState<Set<string>>(new Set());
 
   const scroll = (direction: 'left' | 'right') => {
     if (scrollRef.current) {
@@ -43,6 +44,18 @@ export default function HorizontalEducation({
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
+    });
+  };
+
+  const toggleFlip = (id: string) => {
+    setFlippedCards(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(id)) {
+        newSet.delete(id);
+      } else {
+        newSet.add(id);
+      }
+      return newSet;
     });
   };
 
@@ -98,7 +111,7 @@ export default function HorizontalEducation({
             Education
           </motion.h2>
           {/* Arrow Buttons */}
-          <div className="flex gap-3 mb-4">
+          <div className="flex gap-3 mb-4 relative z-10">
             <button
               onClick={() => scroll('left')}
               className={`w-12 h-12 rounded-full border flex items-center justify-center transition-all hover:scale-110 ${
@@ -132,110 +145,169 @@ export default function HorizontalEducation({
           onMouseEnter={() => setIsPaused(true)}
           onMouseLeave={() => setIsPaused(false)}
         >
-          {education.map((edu, index) => (
-            <motion.div
-              key={`${edu._id}-${index}`}
-              className={`flex-shrink-0 w-[340px] sm:w-[380px] md:w-[420px] lg:w-[450px] p-5 sm:p-6 md:p-7 lg:p-8 rounded-2xl border ${
-                theme === 'dark'
-                  ? 'bg-[#141414] border-gray-800'
-                  : 'bg-white border-gray-200'
-              }`}
-              style={{ scrollSnapAlign: 'start' }}
-              whileHover={{ scale: 1.02, y: -5 }}
-              transition={{ duration: 0.4 }}
-            >
-              {/* Education Icon */}
-              <div className="mb-5 sm:mb-6">
-                <div
-                  className={`inline-flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 rounded-2xl ${
-                    theme === 'dark' ? 'bg-[#1a1a1a]' : 'bg-gray-100'
-                  }`}
-                >
-                  <FiBookOpen
-                    size={28}
-                    className={theme === 'dark' ? 'text-gray-600' : 'text-gray-400'}
-                  />
-                </div>
-              </div>
+          {education.map((edu, index) => {
+            const isFlipped = flippedCards.has(edu._id);
 
-              {/* Degree */}
-              <h3
-                className={`text-xl sm:text-2xl font-bold mb-2 text-hover-zoom ${
-                  theme === 'dark' ? 'text-white' : 'text-black'
-                }`}
-                style={{ letterSpacing: '-0.02em' }}
+            return (
+              <div
+                key={`${edu._id}-${index}`}
+                className="flex-shrink-0 w-[340px] sm:w-[380px] md:w-[420px] lg:w-[450px] h-[500px] sm:h-[520px] md:h-[540px]"
+                style={{ perspective: '1000px', scrollSnapAlign: 'start' }}
               >
-                {edu.degree}
-              </h3>
-
-              {/* Field of Study */}
-              {edu.fieldOfStudy && (
-                <p
-                  className={`text-base sm:text-lg mb-3 ${
-                    theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
-                  }`}
+                <motion.div
+                  className="relative w-full h-full cursor-pointer"
+                  onClick={() => toggleFlip(edu._id)}
+                  whileHover={{ scale: 1.02, y: -5 }}
+                  transition={{ duration: 0.4 }}
+                  style={{ transformStyle: 'preserve-3d' }}
+                  animate={{ rotateY: isFlipped ? 180 : 0 }}
                 >
-                  {edu.fieldOfStudy}
-                </p>
-              )}
-
-              {/* Institution */}
-              <p
-                className={`text-base mb-3 ${
-                  theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
-                }`}
-              >
-                {edu.institution}
-              </p>
-
-              {/* Date */}
-              <p
-                className={`text-sm mb-4 ${
-                  theme === 'dark' ? 'text-gray-600' : 'text-gray-400'
-                }`}
-              >
-                📅 {new Date(edu.startDate).getFullYear()} -{' '}
-                {edu.isOngoing || !edu.endDate ? 'Present' : new Date(edu.endDate).getFullYear()}
-              </p>
-
-              {/* Location */}
-              {edu.location && (
-                <p
-                  className={`text-sm mb-4 ${
-                    theme === 'dark' ? 'text-gray-600' : 'text-gray-400'
-                  }`}
-                >
-                  📍 {edu.location}
-                </p>
-              )}
-
-              {/* Grade */}
-              {edu.grade && (
-                <div className="mb-4">
-                  <span
-                    className={`inline-block px-4 py-2 rounded-full text-sm ${
+                  {/* Front Side */}
+                  <div
+                    className={`absolute inset-0 p-5 sm:p-6 md:p-7 lg:p-8 rounded-2xl border ${
                       theme === 'dark'
-                        ? 'bg-[#1a1a1a] text-gray-400'
-                        : 'bg-gray-100 text-gray-600'
+                        ? 'bg-[#141414] border-gray-800'
+                        : 'bg-white border-gray-200'
                     }`}
+                    style={{
+                      backfaceVisibility: 'hidden',
+                      WebkitBackfaceVisibility: 'hidden',
+                    }}
                   >
-                    Grade: {edu.grade}
-                  </span>
-                </div>
-              )}
+                    {/* Education Icon */}
+                    <div className="mb-5 sm:mb-6">
+                      <div
+                        className={`inline-flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 rounded-2xl ${
+                          theme === 'dark' ? 'bg-[#1a1a1a]' : 'bg-gray-100'
+                        }`}
+                      >
+                        <FiBookOpen
+                          size={28}
+                          className={theme === 'dark' ? 'text-gray-600' : 'text-gray-400'}
+                        />
+                      </div>
+                    </div>
 
-              {/* Description */}
-              {edu.description && (
-                <p
-                  className={`text-sm leading-relaxed ${
-                    theme === 'dark' ? 'text-gray-500' : 'text-gray-500'
-                  }`}
-                >
-                  {edu.description}
-                </p>
-              )}
-            </motion.div>
-          ))}
+                    {/* Degree */}
+                    <h3
+                      className={`text-xl sm:text-2xl font-bold mb-2 ${
+                        theme === 'dark' ? 'text-white' : 'text-black'
+                      }`}
+                      style={{ letterSpacing: '-0.02em' }}
+                    >
+                      {edu.degree}
+                    </h3>
+
+                    {/* Field of Study */}
+                    {edu.fieldOfStudy && (
+                      <p
+                        className={`text-base sm:text-lg mb-3 ${
+                          theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
+                        }`}
+                      >
+                        {edu.fieldOfStudy}
+                      </p>
+                    )}
+
+                    {/* Institution */}
+                    <p
+                      className={`text-base mb-3 ${
+                        theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
+                      }`}
+                    >
+                      {edu.institution}
+                    </p>
+
+                    {/* Date */}
+                    <p
+                      className={`text-sm mb-4 ${
+                        theme === 'dark' ? 'text-gray-600' : 'text-gray-400'
+                      }`}
+                    >
+                      📅 {new Date(edu.startDate).getFullYear()} -{' '}
+                      {edu.isOngoing || !edu.endDate ? 'Present' : new Date(edu.endDate).getFullYear()}
+                    </p>
+
+                    {/* Click to flip indicator */}
+                    <div className={`absolute bottom-6 right-6 text-xs ${
+                      theme === 'dark' ? 'text-gray-600' : 'text-gray-400'
+                    }`}>
+                      Click to flip →
+                    </div>
+                  </div>
+
+                  {/* Back Side */}
+                  <div
+                    className={`absolute inset-0 p-5 sm:p-6 md:p-7 lg:p-8 rounded-2xl border ${
+                      theme === 'dark'
+                        ? 'bg-[#141414] border-gray-800'
+                        : 'bg-white border-gray-200'
+                    }`}
+                    style={{
+                      backfaceVisibility: 'hidden',
+                      WebkitBackfaceVisibility: 'hidden',
+                      transform: 'rotateY(180deg)',
+                    }}
+                  >
+                    {/* Back header */}
+                    <div className="mb-5 sm:mb-6">
+                      <h4
+                        className={`text-lg sm:text-xl font-bold ${
+                          theme === 'dark' ? 'text-white' : 'text-black'
+                        }`}
+                      >
+                        Details
+                      </h4>
+                    </div>
+
+                    {/* Location */}
+                    {edu.location && (
+                      <p
+                        className={`text-sm mb-4 ${
+                          theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
+                        }`}
+                      >
+                        📍 {edu.location}
+                      </p>
+                    )}
+
+                    {/* Grade */}
+                    {edu.grade && (
+                      <div className="mb-4">
+                        <span
+                          className={`inline-block px-4 py-2 rounded-full text-sm ${
+                            theme === 'dark'
+                              ? 'bg-[#1a1a1a] text-gray-400'
+                              : 'bg-gray-100 text-gray-600'
+                          }`}
+                        >
+                          Grade: {edu.grade}
+                        </span>
+                      </div>
+                    )}
+
+                    {/* Description */}
+                    {edu.description && (
+                      <p
+                        className={`text-sm leading-relaxed ${
+                          theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
+                        }`}
+                      >
+                        {edu.description}
+                      </p>
+                    )}
+
+                    {/* Click to flip back indicator */}
+                    <div className={`absolute bottom-6 right-6 text-xs ${
+                      theme === 'dark' ? 'text-gray-600' : 'text-gray-400'
+                    }`}>
+                      ← Click to flip back
+                    </div>
+                  </div>
+                </motion.div>
+              </div>
+            );
+          })}
         </div>
 
         {/* Gradient Overlays */}

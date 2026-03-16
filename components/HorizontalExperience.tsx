@@ -27,6 +27,7 @@ export default function HorizontalExperience({
 }: HorizontalExperienceProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [isPaused, setIsPaused] = useState(false);
+  const [flippedCards, setFlippedCards] = useState<Set<string>>(new Set());
 
   const scroll = (direction: 'left' | 'right') => {
     if (scrollRef.current) {
@@ -36,6 +37,18 @@ export default function HorizontalExperience({
         behavior: 'smooth',
       });
     }
+  };
+
+  const toggleFlip = (id: string) => {
+    setFlippedCards(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(id)) {
+        newSet.delete(id);
+      } else {
+        newSet.add(id);
+      }
+      return newSet;
+    });
   };
 
   const formatDate = (dateString: string) => {
@@ -97,7 +110,7 @@ export default function HorizontalExperience({
             Work Experience
           </motion.h2>
           {/* Arrow Buttons */}
-          <div className="flex gap-3 mb-4">
+          <div className="flex gap-3 mb-4 relative z-10">
             <button
               onClick={() => scroll('left')}
               className={`w-12 h-12 rounded-full border flex items-center justify-center transition-all hover:scale-110 ${
@@ -131,104 +144,165 @@ export default function HorizontalExperience({
           onMouseEnter={() => setIsPaused(true)}
           onMouseLeave={() => setIsPaused(false)}
         >
-          {experiences.map((exp, index) => (
-            <motion.div
-              key={`${exp._id}-${index}`}
-              className={`flex-shrink-0 w-[340px] sm:w-[380px] md:w-[420px] lg:w-[450px] p-5 sm:p-6 md:p-7 lg:p-8 rounded-2xl border ${
-                theme === 'dark'
-                  ? 'bg-[#141414] border-gray-800'
-                  : 'bg-white border-gray-200'
-              }`}
-              style={{ scrollSnapAlign: 'start' }}
-              whileHover={{ scale: 1.02, y: -5 }}
-              transition={{ duration: 0.4 }}
-            >
-              {/* Company Icon */}
-              <div className="mb-5 sm:mb-6">
-                <div
-                  className={`inline-flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 rounded-2xl ${
-                    theme === 'dark' ? 'bg-[#1a1a1a]' : 'bg-gray-100'
-                  }`}
+          {experiences.map((exp, index) => {
+            const isFlipped = flippedCards.has(exp._id);
+
+            return (
+              <div
+                key={`${exp._id}-${index}`}
+                className="flex-shrink-0 w-[340px] sm:w-[380px] md:w-[420px] lg:w-[450px] h-[480px] sm:h-[500px]"
+                style={{ perspective: '1000px', scrollSnapAlign: 'start' }}
+              >
+                <motion.div
+                  className="relative w-full h-full cursor-pointer"
+                  onClick={() => toggleFlip(exp._id)}
+                  whileHover={{ scale: 1.02, y: -5 }}
+                  transition={{ duration: 0.4 }}
+                  style={{ transformStyle: 'preserve-3d' }}
+                  animate={{ rotateY: isFlipped ? 180 : 0 }}
                 >
-                  <FiBriefcase
-                    size={28}
-                    className={theme === 'dark' ? 'text-gray-600' : 'text-gray-400'}
-                  />
-                </div>
-              </div>
-
-              {/* Position */}
-              <h3
-                className={`text-xl sm:text-2xl font-bold mb-2 text-hover-zoom ${
-                  theme === 'dark' ? 'text-white' : 'text-black'
-                }`}
-                style={{ letterSpacing: '-0.02em' }}
-              >
-                {exp.position}
-              </h3>
-
-              {/* Company */}
-              <p
-                className={`text-base sm:text-lg mb-3 ${
-                  theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
-                }`}
-              >
-                {exp.company}
-              </p>
-
-              {/* Location & Duration */}
-              <div className="flex items-center gap-4 mb-4 flex-wrap">
-                {exp.location && (
+                  {/* Front Side */}
                   <div
-                    className={`flex items-center gap-2 text-sm ${
-                      theme === 'dark' ? 'text-gray-500' : 'text-gray-500'
+                    className={`absolute inset-0 p-5 sm:p-6 md:p-7 lg:p-8 rounded-2xl border ${
+                      theme === 'dark'
+                        ? 'bg-[#141414] border-gray-800'
+                        : 'bg-white border-gray-200'
                     }`}
+                    style={{
+                      backfaceVisibility: 'hidden',
+                      WebkitBackfaceVisibility: 'hidden',
+                    }}
                   >
-                    <FiMapPin size={14} />
-                    <span>{exp.location}</span>
-                  </div>
-                )}
-                {exp.duration && (
-                  <p
-                    className={`text-sm ${
-                      theme === 'dark' ? 'text-gray-600' : 'text-gray-400'
-                    }`}
-                  >
-                    📅 {exp.duration}
-                  </p>
-                )}
-              </div>
+                    {/* Company Icon */}
+                    <div className="mb-5 sm:mb-6">
+                      <div
+                        className={`inline-flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 rounded-2xl ${
+                          theme === 'dark' ? 'bg-[#1a1a1a]' : 'bg-gray-100'
+                        }`}
+                      >
+                        <FiBriefcase
+                          size={28}
+                          className={theme === 'dark' ? 'text-gray-600' : 'text-gray-400'}
+                        />
+                      </div>
+                    </div>
 
-              {/* Description */}
-              {exp.description && (
-                <p
-                  className={`text-sm leading-relaxed mb-4 ${
-                    theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
-                  }`}
-                >
-                  {exp.description}
-                </p>
-              )}
+                    {/* Position */}
+                    <h3
+                      className={`text-xl sm:text-2xl font-bold mb-2 ${
+                        theme === 'dark' ? 'text-white' : 'text-black'
+                      }`}
+                      style={{ letterSpacing: '-0.02em' }}
+                    >
+                      {exp.position}
+                    </h3>
 
-              {/* Technologies */}
-              {exp.technologies && exp.technologies.length > 0 && (
-                <div className="flex flex-wrap gap-2">
-                  {exp.technologies.slice(0, 6).map((tech, i) => (
-                    <span
-                      key={i}
-                      className={`text-xs px-3 py-1 rounded-full border ${
-                        theme === 'dark'
-                          ? 'border-gray-800 text-gray-500'
-                          : 'border-gray-200 text-gray-500'
+                    {/* Company */}
+                    <p
+                      className={`text-base sm:text-lg mb-3 ${
+                        theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
                       }`}
                     >
-                      {tech}
-                    </span>
-                  ))}
-                </div>
-              )}
-            </motion.div>
-          ))}
+                      {exp.company}
+                    </p>
+
+                    {/* Duration */}
+                    {exp.duration && (
+                      <p
+                        className={`text-sm mb-3 ${
+                          theme === 'dark' ? 'text-gray-600' : 'text-gray-400'
+                        }`}
+                      >
+                        📅 {exp.duration}
+                      </p>
+                    )}
+
+                    {/* Click to flip indicator */}
+                    <div className={`absolute bottom-6 right-6 text-xs ${
+                      theme === 'dark' ? 'text-gray-600' : 'text-gray-400'
+                    }`}>
+                      Click to flip →
+                    </div>
+                  </div>
+
+                  {/* Back Side */}
+                  <div
+                    className={`absolute inset-0 p-5 sm:p-6 md:p-7 lg:p-8 rounded-2xl border overflow-auto ${
+                      theme === 'dark'
+                        ? 'bg-[#141414] border-gray-800'
+                        : 'bg-white border-gray-200'
+                    }`}
+                    style={{
+                      backfaceVisibility: 'hidden',
+                      WebkitBackfaceVisibility: 'hidden',
+                      transform: 'rotateY(180deg)',
+                    }}
+                  >
+                    <h4 className={`text-lg sm:text-xl font-bold mb-4 ${
+                      theme === 'dark' ? 'text-white' : 'text-black'
+                    }`}>
+                      Details
+                    </h4>
+
+                    {/* Location */}
+                    {exp.location && (
+                      <div
+                        className={`flex items-center gap-2 text-sm mb-3 ${
+                          theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
+                        }`}
+                      >
+                        <FiMapPin size={14} />
+                        <span>{exp.location}</span>
+                      </div>
+                    )}
+
+                    {/* Description */}
+                    {exp.description && (
+                      <p
+                        className={`text-sm leading-relaxed mb-4 ${
+                          theme === 'dark' ? 'text-gray-400' : 'text-gray-600'
+                        }`}
+                      >
+                        {exp.description}
+                      </p>
+                    )}
+
+                    {/* Technologies */}
+                    {exp.technologies && exp.technologies.length > 0 && (
+                      <div>
+                        <h5 className={`text-sm font-semibold mb-2 ${
+                          theme === 'dark' ? 'text-gray-300' : 'text-gray-700'
+                        }`}>
+                          Technologies:
+                        </h5>
+                        <div className="flex flex-wrap gap-2">
+                          {exp.technologies.map((tech, i) => (
+                            <span
+                              key={i}
+                              className={`text-xs px-3 py-1 rounded-full border ${
+                                theme === 'dark'
+                                  ? 'border-gray-800 text-gray-500'
+                                  : 'border-gray-200 text-gray-500'
+                              }`}
+                            >
+                              {tech}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Click to flip back indicator */}
+                    <div className={`absolute bottom-6 right-6 text-xs ${
+                      theme === 'dark' ? 'text-gray-600' : 'text-gray-400'
+                    }`}>
+                      ← Click to flip back
+                    </div>
+                  </div>
+                </motion.div>
+              </div>
+            );
+          })}
         </div>
 
         {/* Gradient Overlays */}

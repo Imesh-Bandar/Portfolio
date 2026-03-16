@@ -93,7 +93,7 @@ export default function HorizontalBlogs({ blogs, theme, onBlogClick }: Horizonta
               </motion.button>
             </Link>
           </div>
-          <div className="flex gap-3 mb-4">
+          <div className="flex gap-3 mb-4 relative z-10">
             <button type="button" onClick={() => scroll('left')} className={`w-12 h-12 rounded-full border flex items-center justify-center transition-all hover:scale-110 ${theme === 'dark' ? 'border-gray-700 hover:border-gray-500 text-gray-400 hover:text-white' : 'border-gray-300 hover:border-gray-500 text-gray-500 hover:text-black'}`}><FiChevronLeft size={24} /></button>
             <button type="button" onClick={() => scroll('right')} className={`w-12 h-12 rounded-full border flex items-center justify-center transition-all hover:scale-110 ${theme === 'dark' ? 'border-gray-700 hover:border-gray-500 text-gray-400 hover:text-white' : 'border-gray-300 hover:border-gray-500 text-gray-500 hover:text-black'}`}><FiChevronRight size={24} /></button>
           </div>
