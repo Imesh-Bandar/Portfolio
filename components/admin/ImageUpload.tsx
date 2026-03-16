@@ -91,7 +91,8 @@ export default function ImageUpload({
   };
 
   const clearImage = async () => {
-    if (previewUrl && previewUrl.startsWith('/uploads/')) {
+    // Delete from server if it's a Vercel Blob URL or local upload
+    if (previewUrl && (previewUrl.includes('blob.vercel-storage.com') || previewUrl.startsWith('/uploads/'))) {
       try {
         await fetch('/api/upload', {
           method: 'DELETE',
@@ -104,6 +105,7 @@ export default function ImageUpload({
         toast.success("Image deleted successfully");
       } catch (error) {
         console.error('Failed to delete image:', error);
+        toast.error("Failed to delete image from storage");
       }
     }
     setPreviewUrl('');

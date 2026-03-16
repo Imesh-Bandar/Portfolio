@@ -1,22 +1,67 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useAuth } from '@/lib/context/AuthContext';
+import { toast } from 'react-hot-toast';
+import { FiEye, FiEyeOff } from 'react-icons/fi';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
+  const [particles, setParticles] = useState<Array<{ id: number; x: number; y: number; delay: number }>>([]);
   const { login } = useAuth();
+
+  useEffect(() => {
+    // Generate random particles for background animation
+    const newParticles = Array.from({ length: 20 }, (_, i) => ({
+      id: i,
+      x: Math.random() * 100,
+      y: Math.random() * 100,
+      delay: Math.random() * 5,
+    }));
+    setParticles(newParticles);
+
+    // Load remembered email if exists
+    const savedEmail = localStorage.getItem('rememberedEmail');
+    if (savedEmail) {
+      setEmail(savedEmail);
+      setRememberMe(true);
+    }
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
     try {
+      // Remember email if checkbox is checked
+      if (rememberMe) {
+        localStorage.setItem('rememberedEmail', email);
+      } else {
+        localStorage.removeItem('rememberedEmail');
+      }
+
       await login(email, password);
+      toast.success('Welcome back!', {
+        icon: '👋',
+        style: {
+          borderRadius: '12px',
+          background: '#1a1a1a',
+          color: '#fff',
+        },
+      });
     } catch (error) {
       console.error('Login failed:', error);
+      toast.error('Invalid credentials. Please try again.', {
+        style: {
+          borderRadius: '12px',
+          background: '#1a1a1a',
+          color: '#fff',
+        },
+      });
     } finally {
       setIsLoading(false);
     }
@@ -29,6 +74,20 @@ export default function LoginPage() {
         <div className="absolute -top-40 -right-40 w-80 h-80 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-float"></div>
         <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-float" style={{ animationDelay: '2s' }}></div>
         <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-pink-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-float" style={{ animationDelay: '4s' }}></div>
+
+        {/* Floating particles */}
+        {particles.map((particle) => (
+          <div
+            key={particle.id}
+            className="absolute w-1 h-1 bg-purple-300 rounded-full opacity-30 animate-float"
+            style={{
+              left: `${particle.x}%`,
+              top: `${particle.y}%`,
+              animationDelay: `${particle.delay}s`,
+              animationDuration: '10s',
+            }}
+          />
+        ))}
       </div>
 
       {/* Login Card */}
@@ -85,14 +144,47 @@ export default function LoginPage() {
                 </div>
                 <input
                   id="password"
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="block w-full pl-10 pr-3 py-3.5 bg-white/10 border border-white/20 rounded-xl text-white placeholder-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 backdrop-blur-sm hover:bg-white/20"
+                  className="block w-full pl-10 pr-12 py-3.5 bg-white/10 border border-white/20 rounded-xl text-white placeholder-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-300 backdrop-blur-sm hover:bg-white/20"
                   placeholder="••••••••"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-purple-300 hover:text-purple-100 transition-colors"
+                >
+                  {showPassword ? (
+                    <FiEyeOff className="h-5 w-5" />
+                  ) : (
+                    <FiEye className="h-5 w-5" />
+                  )}
+                </button>
               </div>
+            </div>
+
+            {/* Remember Me & Forgot Password */}
+            <div className="flex items-center justify-between">
+              <label className="flex items-center cursor-pointer group/checkbox">
+                <input
+                  type="checkbox"
+                  checked={rememberMe}
+                  onChange={(e) => setRememberMe(e.target.checked)}
+                  className="w-4 h-4 text-purple-600 bg-white/10 border-white/20 rounded focus:ring-2 focus:ring-purple-500 cursor-pointer"
+                />
+                <span className="ml-2 text-sm text-purple-200 group-hover/checkbox:text-white transition-colors">
+                  Remember me
+                </span>
+              </label>
+              <button
+                type="button"
+                className="text-sm text-purple-300 hover:text-purple-100 transition-colors"
+                onClick={() => toast('Contact your administrator to reset password', { icon: '🔐' })}
+              >
+                Forgot password?
+              </button>
             </div>
 
             {/* Submit Button */}

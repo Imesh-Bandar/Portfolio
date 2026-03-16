@@ -747,7 +747,10 @@ export default function Home() {
             <HorizontalBlogs
               blogs={data.blogs}
               theme={theme}
-              onBlogClick={(blog) => openModal(blog, 'blog')}
+              onBlogClick={(blog) => {
+                // Navigate to blog page instead of modal
+                window.location.href = `/blogs/${blog.slug}`;
+              }}
             />
           </SectionTransition>
         )}

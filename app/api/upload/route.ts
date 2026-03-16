@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { writeFile, mkdir, unlink } from 'fs/promises';
-import { existsSync } from 'fs';
-import path from 'path';
+import { put, del } from '@vercel/blob';
 import { withAuth } from '@/lib/utils/middleware';
 
 // Configure route to handle larger uploads (10MB)
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
+
+// Maximum allowed file size (10MB)
+export const maxDuration = 60;
 
 export async function POST(request: NextRequest) {
   return withAuth(request, async (req) => {
@@ -39,30 +40,20 @@ export async function POST(request: NextRequest) {
         );
       }
 
-      const bytes = await file.arrayBuffer();
-      const buffer = Buffer.from(bytes);
-
       // Create unique filename
       const timestamp = Date.now();
       const originalName = file.name.replace(/\s+/g, '-');
-      const filename = `${timestamp}-${originalName}`;
+      const filename = `portfolio/${timestamp}-${originalName}`;
 
-      // Ensure upload directory exists
-      const uploadDir = path.join(process.cwd(), 'public', 'uploads');
-      if (!existsSync(uploadDir)) {
-        await mkdir(uploadDir, { recursive: true });
-      }
-
-      // Save file
-      const filepath = path.join(uploadDir, filename);
-      await writeFile(filepath, buffer);
-
-      // Return public URL
-      const publicUrl = `/uploads/${filename}`;
+      // Upload to Vercel Blob
+      const blob = await put(filename, file, {
+        access: 'public',
+        addRandomSuffix: false,
+      });
 
       return NextResponse.json({
         success: true,
-        url: publicUrl,
+        url: blob.url,
         filename: filename
       }, { status: 201 });
 
@@ -86,19 +77,18 @@ export async function DELETE(request: NextRequest) {
         return NextResponse.json({ error: 'No URL provided' }, { status: 400 });
       }
 
-      // Check if it's a local upload
-      if (!url.startsWith('/uploads/')) {
-        return NextResponse.json({ error: 'Invalid URL. Only local uploads can be deleted.' }, { status: 400 });
+      // Check if it's a Vercel Blob URL
+      if (!url.includes('blob.vercel-storage.com') && !url.startsWith('/uploads/')) {
+        return NextResponse.json({ error: 'Invalid URL. Only Vercel Blob uploads can be deleted.' }, { status: 400 });
       }
 
-      const filename = url.replace('/uploads/', '');
-      const filepath = path.join(process.cwd(), 'public', 'uploads', filename);
-
-      if (existsSync(filepath)) {
-        await unlink(filepath);
+      // Delete from Vercel Blob
+      try {
+        await del(url);
         return NextResponse.json({ success: true, message: 'File deleted successfully' });
-      } else {
-        return NextResponse.json({ error: 'File not found' }, { status: 404 });
+      } catch (deleteError) {
+        console.error('Delete error:', deleteError);
+        return NextResponse.json({ error: 'File not found or already deleted' }, { status: 404 });
       }
     } catch (error) {
       console.error('Delete error:', error);

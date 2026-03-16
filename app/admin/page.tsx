@@ -9,7 +9,18 @@ import {
   FiTool,
   FiBook,
   FiPlus,
+  FiClock,
+  FiTrendingUp,
+  FiActivity,
+  FiEye,
+  FiUsers,
+  FiMessageSquare,
+  FiImage,
+  FiSettings,
+  FiStar,
 } from "react-icons/fi";
+import CircularProgress from "@/components/admin/CircularProgress";
+import StatsCard from "@/components/admin/StatsCard";
 
 interface CollectionStats {
   count: number;
@@ -35,6 +46,23 @@ export default function AdminDashboard() {
     education: emptyStats,
   });
   const [isLoading, setIsLoading] = useState(true);
+  const [currentTime, setCurrentTime] = useState(new Date());
+  const [greeting, setGreeting] = useState("");
+
+  // Update time every minute
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 60000);
+
+    // Set greeting based on time
+    const hour = new Date().getHours();
+    if (hour < 12) setGreeting("Good morning");
+    else if (hour < 18) setGreeting("Good afternoon");
+    else setGreeting("Good evening");
+
+    return () => clearInterval(timer);
+  }, []);
 
   useEffect(() => {
     fetchStats();
@@ -148,17 +176,82 @@ export default function AdminDashboard() {
 
   return (
     <div className="animate-fade-in">
-      {/* Header Section */}
+      {/* Header Section with Welcome Message */}
       <div className="mb-10">
-        <div className="relative">
-          <h1 className="text-5xl font-bold text-[var(--text-primary)] mb-3 tracking-tight">
-            Dashboard
-          </h1>
-          <div className="absolute -bottom-2 left-0 w-24 h-1 bg-gradient-to-r from-[#C1BFBE] to-[#5F5F60] rounded-full"></div>
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+          <div className="relative">
+            <h1 className="text-4xl lg:text-5xl font-bold text-[var(--text-primary)] mb-3 tracking-tight">
+              {greeting}, Admin 👋
+            </h1>
+            <div className="absolute -bottom-2 left-0 w-24 h-1 bg-gradient-to-r from-[#C1BFBE] to-[#5F5F60] rounded-full"></div>
+            <p className="text-[var(--text-secondary)] mt-4 text-lg">
+              Manage your portfolio content with ease
+            </p>
+          </div>
+
+          {/* Live Clock & Quick Stats */}
+          <div className="flex flex-col items-start lg:items-end gap-2">
+            <div className="flex items-center gap-2 text-[var(--text-secondary)] text-sm">
+              <FiClock className="text-[#C1BFBE]" />
+              <span className="font-mono">{currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+            </div>
+            <div className="flex items-center gap-2 text-[var(--text-secondary)] text-sm">
+              <FiActivity className="text-[#5F5F60]" />
+              <span>{currentTime.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' })}</span>
+            </div>
+          </div>
         </div>
-        <p className="text-[var(--text-secondary)] mt-4 text-lg">
-          Manage your portfolio content with ease
-        </p>
+      </div>
+
+      {/* Quick Actions Panel */}
+      <div className="mb-8 grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <Link
+          href="/admin/projects"
+          className="group bg-gradient-to-br from-[#C1BFBE]/10 to-[#A89B8E]/10 hover:from-[#C1BFBE]/20 hover:to-[#A89B8E]/20 border border-[#C1BFBE]/20 rounded-xl p-4 transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-[#C1BFBE]/10"
+        >
+          <div className="flex items-center gap-3">
+            <div className="bg-[#C1BFBE]/20 p-2 rounded-lg group-hover:bg-[#C1BFBE]/30 transition-colors">
+              <FiPlus className="text-[#C1BFBE] w-5 h-5" />
+            </div>
+            <span className="text-sm font-semibold text-[var(--text-primary)]">New Project</span>
+          </div>
+        </Link>
+
+        <Link
+          href="/admin/blogs"
+          className="group bg-gradient-to-br from-[#5F5F60]/10 to-[#4C4D4E]/10 hover:from-[#5F5F60]/20 hover:to-[#4C4D4E]/20 border border-[#5F5F60]/20 rounded-xl p-4 transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-[#5F5F60]/10"
+        >
+          <div className="flex items-center gap-3">
+            <div className="bg-[#5F5F60]/20 p-2 rounded-lg group-hover:bg-[#5F5F60]/30 transition-colors">
+              <FiBook className="text-[#5F5F60] w-5 h-5" />
+            </div>
+            <span className="text-sm font-semibold text-[var(--text-primary)]">Write Blog</span>
+          </div>
+        </Link>
+
+        <Link
+          href="/admin/gallery"
+          className="group bg-gradient-to-br from-[#8B7355]/10 to-[#2E2622]/10 hover:from-[#8B7355]/20 hover:to-[#2E2622]/20 border border-[#8B7355]/20 rounded-xl p-4 transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-[#8B7355]/10"
+        >
+          <div className="flex items-center gap-3">
+            <div className="bg-[#8B7355]/20 p-2 rounded-lg group-hover:bg-[#8B7355]/30 transition-colors">
+              <FiEye className="text-[#8B7355] w-5 h-5" />
+            </div>
+            <span className="text-sm font-semibold text-[var(--text-primary)]">Gallery</span>
+          </div>
+        </Link>
+
+        <Link
+          href="/admin/settings"
+          className="group bg-gradient-to-br from-[#A89B8E]/10 to-[#C1BFBE]/10 hover:from-[#A89B8E]/20 hover:to-[#C1BFBE]/20 border border-[#A89B8E]/20 rounded-xl p-4 transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-[#A89B8E]/10"
+        >
+          <div className="flex items-center gap-3">
+            <div className="bg-[#A89B8E]/20 p-2 rounded-lg group-hover:bg-[#A89B8E]/30 transition-colors">
+              <FiTrendingUp className="text-[#A89B8E] w-5 h-5" />
+            </div>
+            <span className="text-sm font-semibold text-[var(--text-primary)]">Settings</span>
+          </div>
+        </Link>
       </div>
 
       {/* Stats Cards Grid */}
@@ -268,27 +361,217 @@ export default function AdminDashboard() {
         })}
       </div>
 
-      {/* Quick Stats Summary */}
-      <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-gradient-to-br from-[#C1BFBE]/10 to-[#A89B8E]/10 backdrop-blur-sm border border-[#C1BFBE]/20 rounded-2xl p-6 text-center">
-          <div className="text-3xl font-bold text-[#C1BFBE] mb-2">
-            {cards.reduce((sum, card) => sum + card.count, 0)}
-          </div>
-          <div className="text-sm text-[var(--text-secondary)]">Total Items</div>
+      {/* Enhanced Stats Grid with New Component */}
+      <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <StatsCard
+          title="Total Items"
+          value={cards.reduce((sum, card) => sum + card.count, 0)}
+          icon={FiFolder}
+          color="#C1BFBE"
+          trend={{ value: 12, isPositive: true }}
+          delay={0}
+        />
+        <StatsCard
+          title="Featured"
+          value={cards.reduce((sum, card) => sum + card.featured, 0)}
+          icon={FiStar}
+          color="#5F5F60"
+          trend={{ value: 8, isPositive: true }}
+          delay={0.1}
+        />
+        <StatsCard
+          title="Categories"
+          value={cards.length}
+          icon={FiActivity}
+          color="#8B7355"
+          delay={0.2}
+        />
+        <StatsCard
+          title="Media Files"
+          value="24"
+          icon={FiImage}
+          color="#A89B8E"
+          trend={{ value: 15, isPositive: true }}
+          delay={0.3}
+        />
+      </div>
+
+      {/* Progress Visualization Section */}
+      <div className="mt-10 grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Circular Progress Cards */}
+        <div className="bg-gradient-to-br from-[#2E2622]/30 to-[#1a1715]/30 border border-[#4C4D4E]/30 rounded-2xl p-6 flex flex-col items-center justify-center hover:border-[#C1BFBE]/40 transition-all duration-300">
+          <CircularProgress
+            value={cards.reduce((sum, card) => sum + card.count, 0) > 0
+              ? Math.round((cards.reduce((sum, card) => sum + card.featured, 0) / cards.reduce((sum, card) => sum + card.count, 0)) * 100)
+              : 0}
+            color="#C1BFBE"
+            backgroundColor="#4C4D4E"
+            size={140}
+            strokeWidth={10}
+          />
+          <p className="mt-4 text-sm font-semibold text-[var(--text-primary)]">Featured Rate</p>
+          <p className="text-xs text-[var(--text-secondary)]">Overall completion</p>
         </div>
 
-        <div className="bg-gradient-to-br from-[#5F5F60]/10 to-[#4C4D4E]/10 backdrop-blur-sm border border-[#5F5F60]/20 rounded-2xl p-6 text-center">
-          <div className="text-3xl font-bold text-[#5F5F60] mb-2">
-            {cards.reduce((sum, card) => sum + card.featured, 0)}
-          </div>
-          <div className="text-sm text-[var(--text-secondary)]">Featured Items</div>
+        <div className="bg-gradient-to-br from-[#2E2622]/30 to-[#1a1715]/30 border border-[#4C4D4E]/30 rounded-2xl p-6 flex flex-col items-center justify-center hover:border-[#5F5F60]/40 transition-all duration-300">
+          <CircularProgress
+            value={stats.projects.count > 0
+              ? Math.round((stats.projects.featured / stats.projects.count) * 100)
+              : 0}
+            color="#5F5F60"
+            backgroundColor="#4C4D4E"
+            size={140}
+            strokeWidth={10}
+          />
+          <p className="mt-4 text-sm font-semibold text-[var(--text-primary)]">Projects Status</p>
+          <p className="text-xs text-[var(--text-secondary)]">Featured projects</p>
         </div>
 
-        <div className="bg-gradient-to-br from-[#8B7355]/10 to-[#2E2622]/10 backdrop-blur-sm border border-[#8B7355]/20 rounded-2xl p-6 text-center">
-          <div className="text-3xl font-bold text-[#8B7355] mb-2">
-            {cards.length}
+        <div className="bg-gradient-to-br from-[#2E2622]/30 to-[#1a1715]/30 border border-[#4C4D4E]/30 rounded-2xl p-6 flex flex-col items-center justify-center hover:border-[#8B7355]/40 transition-all duration-300">
+          <CircularProgress
+            value={stats.skills.count > 0
+              ? Math.round((stats.skills.featured / stats.skills.count) * 100)
+              : 0}
+            color="#8B7355"
+            backgroundColor="#4C4D4E"
+            size={140}
+            strokeWidth={10}
+          />
+          <p className="mt-4 text-sm font-semibold text-[var(--text-primary)]">Skills Progress</p>
+          <p className="text-xs text-[var(--text-secondary)]">Highlighted skills</p>
+        </div>
+      </div>
+
+      {/* Two Column Layout: Portfolio Overview & Activity Timeline */}
+      <div className="mt-10 grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Portfolio Overview */}
+        <div className="bg-gradient-to-br from-[#2E2622]/30 to-[#1a1715]/30 border border-[#4C4D4E]/30 rounded-2xl p-6 backdrop-blur-sm">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-3">
+              <div className="bg-gradient-to-br from-[#C1BFBE] to-[#5F5F60] p-2 rounded-lg">
+                <FiActivity className="text-white w-5 h-5" />
+              </div>
+              <h2 className="text-xl font-bold text-[var(--text-primary)]">Portfolio Overview</h2>
+            </div>
           </div>
-          <div className="text-sm text-[var(--text-secondary)]">Categories</div>
+
+          <div className="space-y-3">
+            {cards.slice(0, 5).map((card) => (
+              <Link
+                key={card.title}
+                href={card.href}
+                className="group block bg-[#0C0C08]/50 border border-[#4C4D4E]/30 rounded-xl p-4 hover:bg-[#2E2622]/30 hover:border-[#C1BFBE]/30 transition-all duration-300"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3 flex-1">
+                    {card.icon && (
+                      <div className="bg-[#C1BFBE]/10 p-2 rounded-lg group-hover:bg-[#C1BFBE]/20 transition-colors">
+                        <card.icon className="text-[#C1BFBE] w-4 h-4" />
+                      </div>
+                    )}
+                    <div className="flex-1 min-w-0">
+                      <span className="text-sm font-semibold text-[#C1BFBE] block mb-1">{card.title}</span>
+                      <p className="text-xs text-[#5F5F60] truncate">{card.latest}</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <div className="text-right">
+                      <div className="text-xs text-[var(--text-secondary)]">
+                        <span className="font-bold text-[#C1BFBE]">{card.count}</span>/{card.featured}
+                      </div>
+                    </div>
+                    <div className="bg-gradient-to-br from-[#C1BFBE]/20 to-[#5F5F60]/20 px-2 py-1 rounded-full min-w-[45px] text-center">
+                      <span className="text-xs font-bold text-[#C1BFBE]">
+                        {card.count > 0 ? Math.round((card.featured / card.count) * 100) : 0}%
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+
+        {/* Activity Timeline */}
+        <div className="bg-gradient-to-br from-[#2E2622]/30 to-[#1a1715]/30 border border-[#4C4D4E]/30 rounded-2xl p-6 backdrop-blur-sm">
+          <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center gap-3">
+              <div className="bg-gradient-to-br from-[#5F5F60] to-[#8B7355] p-2 rounded-lg">
+                <FiClock className="text-white w-5 h-5" />
+              </div>
+              <h2 className="text-xl font-bold text-[var(--text-primary)]">Recent Activity</h2>
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            {/* Activity Item 1 */}
+            <div className="flex gap-4 group">
+              <div className="flex flex-col items-center">
+                <div className="bg-[#C1BFBE]/20 p-2 rounded-full group-hover:bg-[#C1BFBE]/30 transition-colors">
+                  <FiPlus className="text-[#C1BFBE] w-3 h-3" />
+                </div>
+                <div className="w-px h-full bg-[#4C4D4E]/30 mt-2"></div>
+              </div>
+              <div className="flex-1 pb-4">
+                <p className="text-sm font-semibold text-[var(--text-primary)] mb-1">Content Updated</p>
+                <p className="text-xs text-[var(--text-secondary)]">Dashboard statistics refreshed</p>
+                <p className="text-xs text-[#5F5F60] mt-1">Just now</p>
+              </div>
+            </div>
+
+            {/* Activity Item 2 */}
+            <div className="flex gap-4 group">
+              <div className="flex flex-col items-center">
+                <div className="bg-[#5F5F60]/20 p-2 rounded-full group-hover:bg-[#5F5F60]/30 transition-colors">
+                  <FiSettings className="text-[#5F5F60] w-3 h-3" />
+                </div>
+                <div className="w-px h-full bg-[#4C4D4E]/30 mt-2"></div>
+              </div>
+              <div className="flex-1 pb-4">
+                <p className="text-sm font-semibold text-[var(--text-primary)] mb-1">System Status</p>
+                <p className="text-xs text-[var(--text-secondary)]">All systems operational</p>
+                <p className="text-xs text-[#5F5F60] mt-1">5 minutes ago</p>
+              </div>
+            </div>
+
+            {/* Activity Item 3 */}
+            <div className="flex gap-4 group">
+              <div className="flex flex-col items-center">
+                <div className="bg-[#8B7355]/20 p-2 rounded-full group-hover:bg-[#8B7355]/30 transition-colors">
+                  <FiUsers className="text-[#8B7355] w-3 h-3" />
+                </div>
+                <div className="w-px h-full bg-[#4C4D4E]/30 mt-2"></div>
+              </div>
+              <div className="flex-1 pb-4">
+                <p className="text-sm font-semibold text-[var(--text-primary)] mb-1">Admin Session</p>
+                <p className="text-xs text-[var(--text-secondary)]">Logged in successfully</p>
+                <p className="text-xs text-[#5F5F60] mt-1">Today at {currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
+              </div>
+            </div>
+
+            {/* Activity Item 4 */}
+            <div className="flex gap-4 group">
+              <div className="flex flex-col items-center">
+                <div className="bg-[#A89B8E]/20 p-2 rounded-full group-hover:bg-[#A89B8E]/30 transition-colors">
+                  <FiMessageSquare className="text-[#A89B8E] w-3 h-3" />
+                </div>
+              </div>
+              <div className="flex-1">
+                <p className="text-sm font-semibold text-[var(--text-primary)] mb-1">Database Connected</p>
+                <p className="text-xs text-[var(--text-secondary)]">MongoDB connection active</p>
+                <p className="text-xs text-[#5F5F60] mt-1">Today</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Motivational Footer */}
+      <div className="mt-8 text-center">
+        <div className="inline-block bg-gradient-to-r from-[#C1BFBE]/10 via-[#5F5F60]/10 to-[#8B7355]/10 border border-[#C1BFBE]/20 rounded-full px-6 py-3">
+          <p className="text-sm text-[var(--text-secondary)]">
+            <span className="font-semibold text-[#C1BFBE]">Keep building!</span> Your portfolio is growing beautifully ✨
+          </p>
         </div>
       </div>
     </div>

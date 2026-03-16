@@ -5,6 +5,15 @@ import { useAuth } from '@/lib/context/AuthContext';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 import ImageUpload from '@/components/admin/ImageUpload';
+import dynamic from 'next/dynamic';
+
+// Dynamically import RichTextEditor to avoid SSR issues
+const DynamicRichTextEditor = dynamic(() => import('@/components/admin/RichTextEditor'), {
+  ssr: false,
+  loading: () => <div className="border-2 border-[#5F5F60]/30 rounded-xl p-4 min-h-100 flex items-center justify-center">
+    <div className="text-[#5F5F60]">Loading editor...</div>
+  </div>
+});
 
 interface Blog {
   _id: string;
@@ -224,17 +233,20 @@ export default function BlogsPage() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1">Content * (Markdown supported)</label>
-            <textarea
-              required
-              rows={10}
-              value={formData.content}
-              onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-              className="w-full px-3 py-2 border rounded-lg font-mono text-sm"
-              placeholder="Write your blog content here. You can use Markdown for formatting..."
+            <label className="block text-sm font-medium mb-2 text-[#0C0C08]">
+              Content * <span className="text-[#5F5F60] font-normal">(Rich Text Editor)</span>
+            </label>
+            <DynamicRichTextEditor
+              content={formData.content}
+              onChange={(content) => setFormData({ ...formData, content })}
+              placeholder="Start writing your amazing blog post here... Use the toolbar above for formatting!"
             />
-            <p className="text-xs text-gray-500 mt-1">
-              Tip: Use ## for headings, **bold**, *italic*, [link](url), - for lists
+            <p className="text-xs text-[#5F5F60] mt-2 flex items-start gap-2">
+              <span className="font-semibold">💡 Pro Tips:</span>
+              <span>
+                Use <strong>Bold</strong> for emphasis, headings for structure, lists for clarity,
+                and add links/images to make your content engaging!
+              </span>
             </p>
           </div>
 
@@ -293,6 +305,7 @@ export default function BlogsPage() {
               <label className="flex items-center gap-2 cursor-pointer">
                 <input
                   type="checkbox"
+                  title="Mark as published"
                   checked={formData.isPublished}
                   onChange={(e) => setFormData({ ...formData, isPublished: e.target.checked })}
                   className="w-4 h-4"
@@ -302,6 +315,7 @@ export default function BlogsPage() {
               <label className="flex items-center gap-2 cursor-pointer">
                 <input
                   type="checkbox"
+                  title="Mark as featured"
                   checked={formData.isFeatured}
                   onChange={(e) => setFormData({ ...formData, isFeatured: e.target.checked })}
                   className="w-4 h-4"
@@ -365,12 +379,14 @@ export default function BlogsPage() {
                   <td className="px-6 py-4">{blog.views}</td>
                   <td className="px-6 py-4">
                     <button
+                      type="button"
                       onClick={() => handleEdit(blog)}
                       className="text-blue-600 hover:text-blue-800 mr-3"
                     >
                       Edit
                     </button>
                     <button
+                      type="button"
                       onClick={() => handleDelete(blog._id)}
                       className="text-red-600 hover:text-red-800"
                     >

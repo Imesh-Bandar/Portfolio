@@ -13,6 +13,14 @@ const nextConfig: NextConfig = {
         protocol: 'http',
         hostname: 'localhost',
       },
+      {
+        protocol: 'https',
+        hostname: '*.blob.vercel-storage.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'blob.vercel-storage.com',
+      },
     ],
     unoptimized: true,
   },
