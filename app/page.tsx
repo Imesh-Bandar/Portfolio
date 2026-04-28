@@ -1,10 +1,9 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import Link from 'next/link';
 import { FiGithub, FiLinkedin, FiMail, FiSun, FiMoon, FiMenu, FiX } from 'react-icons/fi';
 import { FaWhatsapp } from 'react-icons/fa';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from '@/lib/context/ThemeContext';
 import DoodleBackground from '@/components/DoodleBackground';
 import HorizontalProjects from '@/components/HorizontalProjects';
@@ -22,6 +21,8 @@ import DetailModal from '@/components/DetailModal';
 import CustomCursor from '@/components/CustomCursor';
 import SectionTransition from '@/components/SectionTransition';
 import WaveDivider from '@/components/WaveDivider';
+import LoadingScreen from '@/components/LoadingScreen';
+import ParticleBackground from '@/components/ParticleBackground';
 
 export default function Home() {
   const { theme, toggleTheme } = useTheme();
@@ -42,12 +43,14 @@ export default function Home() {
     },
   });
   const [loading, setLoading] = useState(true);
+  const [showLoadingScreen, setShowLoadingScreen] = useState(true);
   const [activeSection, setActiveSection] = useState('home');
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [selectedItem, setSelectedItem] = useState<any>(null);
   const [modalType, setModalType] = useState<'project' | 'skill' | 'education' | 'experience' | 'certification' | 'blog' | 'gallery' | 'technology'>('project');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [scrollProgress, setScrollProgress] = useState(0);
 
   const openModal = (item: any, type: typeof modalType) => {
     setSelectedItem(item);
@@ -78,6 +81,11 @@ export default function Home() {
   const handleScroll = () => {
     const sections = ['home', 'about', 'skills', 'projects', 'experience', 'education', 'certifications', 'gallery', 'blog'];
     const scrollPosition = window.scrollY + 100;
+
+    // Scroll progress
+    const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const progress = totalHeight > 0 ? (window.scrollY / totalHeight) * 100 : 0;
+    setScrollProgress(Math.min(100, Math.max(0, progress)));
 
     for (const section of sections) {
       const element = document.getElementById(section);
@@ -113,12 +121,29 @@ export default function Home() {
     }
   };
 
+  if (showLoadingScreen) {
+    return (
+      <LoadingScreen
+        onComplete={() => setShowLoadingScreen(false)}
+        theme={theme}
+      />
+    );
+  }
+
   if (loading) {
     return (
-      <div className={`min-h-screen flex items-center justify-center ${theme === 'dark' ? 'bg-[#0a0a0a]' : 'bg-[#fafafa]'}`}>
+      <div className={`min-h-screen flex items-center justify-center ${theme === 'dark' ? 'bg-[#0a0a0f]' : 'bg-[#fafafe]'}`}>
         <div className="flex flex-col items-center gap-4">
-          <div className={`w-16 h-16 border-4 border-t-transparent rounded-full animate-spin ${theme === 'dark' ? 'border-gray-600' : 'border-gray-400'}`}></div>
-          <p className={`font-medium ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>Loading Portfolio...</p>
+          <div style={{
+            width: 48,
+            height: 48,
+            borderRadius: '50%',
+            border: '3px solid transparent',
+            borderTopColor: '#6366f1',
+            borderRightColor: '#a855f7',
+            animation: 'loading-spin 0.8s linear infinite',
+          }} />
+          <p className="gradient-text-indigo font-medium text-sm">Loading Portfolio...</p>
         </div>
       </div>
     );
@@ -126,6 +151,12 @@ export default function Home() {
 
   return (
     <>
+      {/* Scroll Progress Bar */}
+      <div
+        className="scroll-progress"
+        style={{ width: `${scrollProgress}%` }}
+      />
+
       {/* Custom Cursor */}
       <CustomCursor />
 
@@ -133,15 +164,16 @@ export default function Home() {
       <DoodleBackground />
 
       {/* Minimalist Navigation */}
-      <nav className={`fixed top-0 left-0 right-0 z-50 backdrop-blur-md border-b transition-colors ${
+      <nav className={`fixed top-0 left-0 right-0 z-50 backdrop-blur-md border-b transition-colors nav-glow ${
         theme === 'dark'
-          ? 'bg-[#0a0a0a]/80 border-[#1a1a1a]'
-          : 'bg-[#fafafa]/80 border-[#e0e0e0]'
+          ? 'bg-[#0a0a0f]/85 border-[#1f1f35]'
+          : 'bg-[#fafafe]/85 border-[#e0e0f0]'
       }`}>
         <div className="max-w-7xl mx-auto px-6 py-6">
           <div className="flex items-center justify-between">
             <a href="#home" className={`text-lg font-bold tracking-tight ${theme === 'dark' ? 'text-white' : 'text-black'}`}>
-              Imesh Bandara
+              <span className="gradient-text-indigo">IB</span>
+              <span className={`ml-2 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-800'}`}>Imesh Bandara</span>
             </a>
 
             {/* Desktop Navigation */}
@@ -150,13 +182,20 @@ export default function Home() {
                 <a
                   key={item}
                   href={`#${item.toLowerCase()}`}
-                  className={`text-sm tracking-wide transition-colors ${
+                  className={`text-sm tracking-wide transition-all duration-200 relative ${
                     activeSection === item.toLowerCase()
-                      ? theme === 'dark' ? 'text-white' : 'text-black'
-                      : theme === 'dark' ? 'text-gray-500 hover:text-white' : 'text-gray-500 hover:text-black'
+                      ? theme === 'dark' ? 'text-white' : 'text-[#4338ca]'
+                      : theme === 'dark' ? 'text-gray-500 hover:text-white' : 'text-gray-500 hover:text-[#4338ca]'
                   }`}
                 >
                   {item}
+                  {activeSection === item.toLowerCase() && (
+                    <motion.span
+                      layoutId="nav-active"
+                      className="absolute -bottom-1 left-0 right-0 h-[2px] rounded-full"
+                      style={{ background: 'linear-gradient(90deg, #6366f1, #a855f7)' }}
+                    />
+                  )}
                 </a>
               ))}
               <motion.button
@@ -233,10 +272,13 @@ export default function Home() {
       </nav>
 
       <main className={`transition-colors ${
-        theme === 'dark' ? 'bg-[#0a0a0a] text-white' : 'bg-[#fafafa] text-black'
+        theme === 'dark' ? 'bg-[#0a0a0f] text-white' : 'bg-[#fafafe] text-black'
       }`}>
         {/* Hero Section */}
         <section id="home" className="min-h-screen flex items-center justify-center relative overflow-hidden">
+          {/* Hero Background Image */}
+          <div className="hero-bg" aria-hidden="true" />
+
           {/* Animated gradient background with dynamic mouse tracking */}
           <motion.div
             className="absolute inset-0 transition-all duration-1000"
@@ -367,19 +409,20 @@ export default function Home() {
             ></motion.div>
           </div>
 
+          {/* Particle Background for Hero */}
+          <ParticleBackground theme={theme} variant="particles" opacity={0.6} />
+
           {/* Minimalist Hero Content */}
           <div className="relative max-w-7xl mx-auto px-6 min-h-screen flex flex-col justify-center">
             <div className="max-w-6xl">
               {/* Intro Label */}
               <motion.p
-                className={`text-xs md:text-sm uppercase tracking-[0.3em] mb-8 ${
-                  theme === 'dark' ? 'text-gray-600' : 'text-gray-400'
-                }`}
+                className="text-xs md:text-sm uppercase tracking-[0.3em] mb-8 gradient-text-indigo font-medium"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.2 }}
               >
-                Software Engineer / Full Stack Developer
+                ✦ Software Engineer / Full Stack Developer
               </motion.p>
 
               {/* Large Hero Typography - Typewriter Animation */}
@@ -451,10 +494,13 @@ export default function Home() {
                   })}
                   {/* Blinking cursor */}
                   <motion.span
-                    className={`inline-block w-[3px] ml-1 ${
-                      theme === 'dark' ? 'bg-white' : 'bg-black'
-                    }`}
-                    style={{ height: '0.85em', verticalAlign: 'baseline' }}
+                    className="inline-block w-[3px] ml-1"
+                    style={{
+                      height: '0.85em',
+                      verticalAlign: 'baseline',
+                      background: 'linear-gradient(180deg, #6366f1, #a855f7)',
+                      borderRadius: 2,
+                    }}
                     animate={{ opacity: [1, 0, 1] }}
                     transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
                   />
@@ -475,74 +521,63 @@ export default function Home() {
 
               {/* CTA Links */}
               <motion.div
-                className="flex flex-wrap gap-6"
+                className="flex flex-wrap gap-4"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 1 }}
               >
-                <a
+                <motion.a
                   href="#projects"
-                  className={`group inline-flex items-center gap-3 text-base md:text-lg transition-colors ${
-                    theme === 'dark' ? 'text-white hover:text-gray-300' : 'text-black hover:text-gray-700'
-                  }`}
+                  className="btn-primary inline-flex items-center gap-2"
+                  whileHover={{ scale: 1.04 }}
+                  whileTap={{ scale: 0.97 }}
                 >
-                  → See my projects
-                </a>
-                <a
+                  <span>View Projects</span>
+                  <span style={{ fontSize: 18 }}>→</span>
+                </motion.a>
+                <motion.a
                   href="#about"
-                  className={`group inline-flex items-center gap-3 text-base md:text-lg transition-colors ${
-                    theme === 'dark' ? 'text-gray-500 hover:text-white' : 'text-gray-500 hover:text-black'
+                  className={`inline-flex items-center gap-2 px-7 py-3 rounded-xl border font-medium text-[15px] transition-all ${
+                    theme === 'dark'
+                      ? 'border-[#1f1f35] text-gray-400 hover:border-[#6366f1]/40 hover:text-white'
+                      : 'border-[#e0e0f0] text-gray-500 hover:border-[#6366f1]/40 hover:text-[#4338ca]'
                   }`}
+                  whileHover={{ scale: 1.04 }}
+                  whileTap={{ scale: 0.97 }}
                 >
-                  → More about me
-                </a>
+                  About Me
+                </motion.a>
               </motion.div>
 
               {/* Social Links - Minimal */}
               <motion.div
-                className="flex gap-6 mt-16"
+                className="flex gap-5 mt-12"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.6, delay: 1.2 }}
               >
-                <a
-                  href="https://github.com/Imesh-Bandar"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={`text-sm transition-colors ${
-                    theme === 'dark' ? 'text-gray-600 hover:text-white' : 'text-gray-400 hover:text-black'
-                  }`}
-                >
-                  GitHub ↗
-                </a>
-                <a
-                  href="https://linkedin.com/in/YOUR_PROFILE"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={`text-sm transition-colors ${
-                    theme === 'dark' ? 'text-gray-600 hover:text-white' : 'text-gray-400 hover:text-black'
-                  }`}
-                >
-                  LinkedIn ↗
-                </a>
-                <a
-                  href="mailto:imesh.fsd.info@gmail.com"
-                  className={`text-sm transition-colors ${
-                    theme === 'dark' ? 'text-gray-600 hover:text-white' : 'text-gray-400 hover:text-black'
-                  }`}
-                >
-                  Email ↗
-                </a>
-                <a
-                  href="https://wa.me/94704394523"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={`text-sm transition-colors ${
-                    theme === 'dark' ? 'text-gray-600 hover:text-white' : 'text-gray-400 hover:text-black'
-                  }`}
-                >
-                  WhatsApp ↗
-                </a>
+                {[
+                  { label: 'GitHub', href: 'https://github.com/Imesh-Bandar', icon: '⌥' },
+                  { label: 'LinkedIn', href: 'https://linkedin.com/in/YOUR_PROFILE', icon: '◈' },
+                  { label: 'Email', href: 'mailto:imesh.fsd.info@gmail.com', icon: '✉' },
+                  { label: 'WhatsApp', href: 'https://wa.me/94704394523', icon: '◎' },
+                ].map(({ label, href, icon }) => (
+                  <motion.a
+                    key={label}
+                    href={href}
+                    target={href.startsWith('http') ? '_blank' : undefined}
+                    rel={href.startsWith('http') ? 'noopener noreferrer' : undefined}
+                    className={`text-sm flex items-center gap-1.5 transition-all ${
+                      theme === 'dark'
+                        ? 'text-gray-600 hover:text-white'
+                        : 'text-gray-400 hover:text-[#4338ca]'
+                    }`}
+                    whileHover={{ y: -2 }}
+                  >
+                    <span style={{ color: '#6366f1' }}>{icon}</span>
+                    {label} ↗
+                  </motion.a>
+                ))}
               </motion.div>
             </div>
 
@@ -565,12 +600,13 @@ export default function Home() {
 
         {/* About Section */}
         <SectionTransition id="about" className="py-32 relative overflow-hidden" animationType="circle-expand" sectionName="About Me">
-          <DoodleBackground fixed={false} opacity={0.15} doodleCount={15} />
+          <DoodleBackground fixed={false} opacity={0.1} doodleCount={12} />
+          <ParticleBackground theme={theme} variant="grid" opacity={0.5} />
           <div className="max-w-7xl mx-auto px-6 relative z-10">
             <div className="max-w-3xl mx-auto">
               <motion.h2
-                className={`text-6xl md:text-7xl lg:text-8xl font-bold mb-16 text-center ${theme === 'dark' ? 'text-white' : 'text-black'}`}
-                style={{ letterSpacing: '-0.04em' }}
+                className={`text-6xl md:text-7xl lg:text-8xl font-bold mb-16 text-center section-heading-accent mx-auto ${theme === 'dark' ? 'text-white' : 'text-black'}`}
+                style={{ letterSpacing: '-0.04em', display: 'inline-block' }}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -579,11 +615,7 @@ export default function Home() {
                 {data.about?.title || 'About Me'}
               </motion.h2>
 
-              <div className={`backdrop-blur border rounded-2xl p-8 ${
-                theme === 'dark'
-                  ? 'bg-[#C1BFBE]/20 dark:bg-[#2E2622] border-[#4C4D4E]'
-                  : 'bg-[#C1BFBE]/10/50 border-[#5F5F60]/30 shadow-lg'
-              }`}>
+              <div className="glass-card p-8">
                 <div className={`flex flex-col md:flex-row gap-10 items-center md:items-start`}>
                   {/* Text Content */}
                   <div className={`flex-1 ${!data.about?.imageUrl ? 'md:col-span-2' : ''}`}>
@@ -625,23 +657,26 @@ export default function Home() {
                   )}
                 </div>
 
-                <div className={`grid grid-cols-2 md:grid-cols-4 gap-6 mt-8 pt-8 border-t ${theme === 'dark' ? 'border-[#4C4D4E]' : 'border-[#5F5F60]/30'}`}>
-                  <div>
-                    <h3 className={`text-3xl font-bold mb-1 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>{data.projects.length}+</h3>
-                    <p className="text-sm text-gray-500">Projects</p>
-                  </div>
-                  <div>
-                    <h3 className={`text-3xl font-bold mb-1 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>{data.skills.length}+</h3>
-                    <p className="text-sm text-gray-500">Skills</p>
-                  </div>
-                  <div>
-                    <h3 className={`text-3xl font-bold mb-1 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>{data.technologies.length}+</h3>
-                    <p className="text-sm text-gray-500">Technologies</p>
-                  </div>
-                  <div>
-                    <h3 className={`text-3xl font-bold mb-1 ${theme === 'dark' ? 'text-gray-300' : 'text-gray-700'}`}>{data.certifications.length}+</h3>
-                    <p className="text-sm text-gray-500">Certifications</p>
-                  </div>
+                <div className={`grid grid-cols-2 md:grid-cols-4 gap-6 mt-8 pt-8 border-t ${
+                  theme === 'dark' ? 'border-[#1f1f35]' : 'border-[#e0e0f0]'
+                }`}>
+                  {[
+                    { count: data.projects.length, label: 'Projects' },
+                    { count: data.skills.length, label: 'Skills' },
+                    { count: data.technologies.length, label: 'Technologies' },
+                    { count: data.certifications.length, label: 'Certifications' },
+                  ].map(({ count, label }) => (
+                    <motion.div
+                      key={label}
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.5 }}
+                    >
+                      <h3 className="text-3xl font-bold mb-1 gradient-text-indigo">{count}+</h3>
+                      <p className="text-sm text-gray-500">{label}</p>
+                    </motion.div>
+                  ))}
                 </div>
               </div>
             </div>
@@ -759,91 +794,136 @@ export default function Home() {
         <WaveDivider theme={theme} variant="bottom" />
 
         {/* Contact Section */}
-        <SectionTransition id="contact" className={`py-24 relative overflow-hidden ${theme === 'dark' ? 'bg-[#C1BFBE]/5' : 'bg-gray-50/50'}`} animationType="scale-up" sectionName="Get In Touch">
-          <DoodleBackground fixed={false} opacity={0.08} doodleCount={10} />
+        <SectionTransition id="contact" className={`py-24 relative overflow-hidden`} animationType="scale-up" sectionName="Get In Touch">
+          <DoodleBackground fixed={false} opacity={0.06} doodleCount={8} />
+          <ParticleBackground theme={theme} variant="waves" opacity={0.5} />
           <div className="max-w-4xl mx-auto px-6 text-center relative z-10">
-            <h2 className={`text-4xl md:text-5xl font-bold mb-6 ${theme === 'dark' ? 'text-white' : 'text-black'}`}>
-              Let&apos;s Work Together
-            </h2>
-            <p className={`text-lg mb-8 ${theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}>
+            <motion.h2
+              className="text-4xl md:text-5xl font-bold mb-4"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+            >
+              <span className={theme === 'dark' ? 'text-white' : 'text-black'}>Let&apos;s </span>
+              <span className="gradient-text-indigo">Work Together</span>
+            </motion.h2>
+            <motion.p
+              className={`text-lg mb-10 ${ theme === 'dark' ? 'text-gray-400' : 'text-gray-600'}`}
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+            >
               Have a project in mind? Let&apos;s create something amazing together.
-            </p>
+            </motion.p>
 
-            <div className="flex flex-wrap items-center justify-center gap-4">
-              <a
+            <motion.div
+              className="flex flex-wrap items-center justify-center gap-4"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+            >
+              <motion.a
                 href="mailto:imesh.fsd.info@gmail.com"
-                className={`px-8 py-4 rounded-lg font-medium transition-colors flex items-center gap-2 ${
-                  theme === 'dark'
-                    ? 'bg-gray-700 hover:bg-gray-600 text-white'
-                    : 'bg-gray-800 hover:bg-gray-700 text-white'
-                }`}
+                className="btn-primary flex items-center gap-2"
+                whileHover={{ scale: 1.04 }}
+                whileTap={{ scale: 0.97 }}
               >
-                <FiMail size={20} />
+                <FiMail size={18} />
                 Send Email
-              </a>
-              <a
+              </motion.a>
+              <motion.a
                 href="https://github.com/Imesh-Bandar"
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`px-8 py-4 rounded-lg font-medium transition-colors border flex items-center gap-2 ${
+                className={`px-7 py-3 rounded-xl font-medium transition-all border flex items-center gap-2 text-[15px] ${
                   theme === 'dark'
-                    ? 'bg-[#4C4D4E] hover:bg-[#4C4D4E] text-[#C1BFBE] border-[#5F5F60]'
-                    : 'bg-gray-100 hover:bg-gray-200 text-gray-900 border-gray-300'
+                    ? 'border-[#1f1f35] text-gray-300 hover:border-[#6366f1]/40 hover:text-white'
+                    : 'border-[#e0e0f0] text-gray-700 hover:border-[#6366f1]/40 hover:text-[#4338ca]'
                 }`}
+                whileHover={{ scale: 1.04, y: -2 }}
+                whileTap={{ scale: 0.97 }}
               >
-                <FiGithub size={20} />
+                <FiGithub size={18} />
                 GitHub
-              </a>
-              <a
+              </motion.a>
+              <motion.a
                 href="https://linkedin.com/in/YOUR_PROFILE"
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`px-8 py-4 rounded-lg font-medium transition-colors border flex items-center gap-2 ${
+                className={`px-7 py-3 rounded-xl font-medium transition-all border flex items-center gap-2 text-[15px] ${
                   theme === 'dark'
-                    ? 'bg-[#4C4D4E] hover:bg-[#4C4D4E] text-[#C1BFBE] border-[#5F5F60]'
-                    : 'bg-gray-100 hover:bg-gray-200 text-gray-900 border-gray-300'
+                    ? 'border-[#1f1f35] text-gray-300 hover:border-[#6366f1]/40 hover:text-white'
+                    : 'border-[#e0e0f0] text-gray-700 hover:border-[#6366f1]/40 hover:text-[#4338ca]'
                 }`}
+                whileHover={{ scale: 1.04, y: -2 }}
+                whileTap={{ scale: 0.97 }}
               >
-                <FiLinkedin size={20} />
+                <FiLinkedin size={18} />
                 LinkedIn
-              </a>
-              <a
+              </motion.a>
+              <motion.a
                 href="https://wa.me/94704394523"
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`px-8 py-4 rounded-lg font-medium transition-colors border flex items-center gap-2 ${
+                className={`px-7 py-3 rounded-xl font-medium transition-all border flex items-center gap-2 text-[15px] ${
                   theme === 'dark'
-                    ? 'bg-[#25D366]/20 hover:bg-[#25D366]/30 text-[#25D366] border-[#25D366]/40'
-                    : 'bg-[#25D366]/10 hover:bg-[#25D366]/20 text-[#128C7E] border-[#25D366]/30'
+                    ? 'border-[#25D366]/30 text-[#25D366] hover:bg-[#25D366]/10'
+                    : 'border-[#25D366]/30 text-[#128C7E] hover:bg-[#25D366]/10'
                 }`}
+                whileHover={{ scale: 1.04, y: -2 }}
+                whileTap={{ scale: 0.97 }}
               >
-                <FaWhatsapp size={20} />
+                <FaWhatsapp size={18} />
                 WhatsApp
-              </a>
-            </div>
+              </motion.a>
+            </motion.div>
           </div>
         </SectionTransition>
 
         {/* Footer */}
-        <footer className={`py-12 border-t ${theme === 'dark' ? 'border-[#4C4D4E]' : 'border-[#5F5F60]/30'}`}>
+        <footer className={`py-10 border-t relative ${
+          theme === 'dark' ? 'border-[#1f1f35]' : 'border-[#e0e0f0]'
+        }`}>
+          <div
+            style={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              height: 1,
+              background: 'linear-gradient(90deg, transparent, #6366f1, #a855f7, transparent)',
+            }}
+          />
           <div className="max-w-7xl mx-auto px-6">
             <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-              <p className={`text-sm ${theme === 'dark' ? 'text-gray-500' : 'text-gray-600'}`}>
-                © {new Date().getFullYear()} Imesh Bandara. All rights reserved.
+              <p className={`text-sm ${theme === 'dark' ? 'text-gray-500' : 'text-gray-500'}`}>
+                © {new Date().getFullYear()}{' '}
+                <span className="gradient-text-indigo font-semibold">Imesh Bandara</span>
+                . All rights reserved.
               </p>
-              <div className="flex items-center gap-6">
-                <a href="https://github.com/Imesh-Bandar" target="_blank" rel="noopener noreferrer" className={`transition-colors ${theme === 'dark' ? 'text-gray-500 hover:text-[#C1BFBE]' : 'text-gray-600 hover:text-gray-900'}`}>
-                  <FiGithub size={20} />
-                </a>
-                <a href="https://linkedin.com/in/YOUR_PROFILE" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-[#C1BFBE] transition-colors">
-                  <FiLinkedin size={20} />
-                </a>
-                <a href="mailto:imesh.fsd.info@gmail.com" className="text-gray-500 hover:text-[#C1BFBE] transition-colors">
-                  <FiMail size={20} />
-                </a>
-                <a href="https://wa.me/94704394523" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-[#25D366] transition-colors">
-                  <FaWhatsapp size={20} />
-                </a>
+              <div className="flex items-center gap-5">
+                {[
+                  { href: 'https://github.com/Imesh-Bandar', icon: <FiGithub size={18} /> },
+                  { href: 'https://linkedin.com/in/YOUR_PROFILE', icon: <FiLinkedin size={18} /> },
+                  { href: 'mailto:imesh.fsd.info@gmail.com', icon: <FiMail size={18} /> },
+                  { href: 'https://wa.me/94704394523', icon: <FaWhatsapp size={18} /> },
+                ].map(({ href, icon }) => (
+                  <motion.a
+                    key={href}
+                    href={href}
+                    target={href.startsWith('http') ? '_blank' : undefined}
+                    rel={href.startsWith('http') ? 'noopener noreferrer' : undefined}
+                    className={`transition-colors ${
+                      theme === 'dark' ? 'text-gray-600 hover:text-white' : 'text-gray-400 hover:text-[#4338ca]'
+                    }`}
+                    whileHover={{ scale: 1.2, y: -2 }}
+                  >
+                    {icon}
+                  </motion.a>
+                ))}
               </div>
             </div>
           </div>
