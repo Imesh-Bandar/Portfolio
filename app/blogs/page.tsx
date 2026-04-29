@@ -97,7 +97,7 @@ export default function BlogsPage() {
   }
 
   return (
-    <div className={`min-h-screen ${theme === 'dark' ? 'bg-[#0a0a0a]' : 'bg-white'}`}>
+    <div className="min-h-screen relative">
       <CustomCursor />
 
       {/* Navigation Bar */}

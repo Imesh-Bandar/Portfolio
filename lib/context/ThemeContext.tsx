@@ -23,6 +23,11 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     } else {
       // Set initial theme attribute
       document.documentElement.setAttribute('data-theme', theme);
+      if (theme === 'dark') {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
     }
   }, []);
 
@@ -30,6 +35,11 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     if (mounted) {
       localStorage.setItem('theme', theme);
       document.documentElement.setAttribute('data-theme', theme);
+      if (theme === 'dark') {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
     }
   }, [theme, mounted]);
 

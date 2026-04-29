@@ -5,6 +5,7 @@ import { ThemeProvider } from '@/lib/context/ThemeContext';
 import { SettingsProvider } from '@/lib/context/SettingsContext';
 import { Toaster } from 'react-hot-toast';
 import PageTransition from '@/components/PageTransition';
+import GlobalGrid from '@/components/GlobalGrid';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -33,6 +34,7 @@ export default function RootLayout({
       <body className={`${inter.variable} ${jetbrainsMono.variable} ${inter.className} overflow-x-hidden`}>
         <SettingsProvider>
           <ThemeProvider>
+            <GlobalGrid />
             <PageTransition>
               {children}
             </PageTransition>

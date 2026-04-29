@@ -119,139 +119,73 @@ export default function AdminDashboard() {
   };
 
   const cards = [
-    {
-      title: "Certifications",
-      count: stats.certifications.count,
-      featured: stats.certifications.featured,
-      latest: stats.certifications.latest,
-      icon: FiAward,
-      href: "/admin/certifications",
-      accent: "border-l-4 border-[#C1BFBE]",
-    },
-    {
-      title: "Projects",
-      count: stats.projects.count,
-      featured: stats.projects.featured,
-      latest: stats.projects.latest,
-      icon: FiFolder,
-      href: "/admin/projects",
-      accent: "border-l-4 border-[#5F5F60]",
-    },
-    {
-      title: "Skills",
-      count: stats.skills.count,
-      featured: stats.skills.featured,
-      latest: stats.skills.latest,
-      icon: FiCode,
-      href: "/admin/skills",
-      accent: "border-l-4 border-[#C1BFBE]",
-    },
-    {
-      title: "Technologies",
-      count: stats.technologies.count,
-      featured: stats.technologies.featured,
-      latest: stats.technologies.latest,
-      icon: FiTool,
-      href: "/admin/technologies",
-      accent: "border-l-4 border-[#5F5F60]",
-    },
-    {
-      title: "Education",
-      count: stats.education.count,
-      featured: stats.education.featured,
-      latest: stats.education.latest,
-      icon: FiBook,
-      href: "/admin/education",
-      accent: "border-l-4 border-[#C1BFBE]",
-    },
+    { title: "Certifications", count: stats.certifications.count, featured: stats.certifications.featured, latest: stats.certifications.latest, icon: FiAward,  href: "/admin/certifications",  color: "#6366f1", glow: "rgba(99,102,241,0.25)" },
+    { title: "Projects",       count: stats.projects.count,       featured: stats.projects.featured,       latest: stats.projects.latest,       icon: FiFolder, href: "/admin/projects",        color: "#8b5cf6", glow: "rgba(139,92,246,0.25)" },
+    { title: "Skills",         count: stats.skills.count,         featured: stats.skills.featured,         latest: stats.skills.latest,         icon: FiCode,   href: "/admin/skills",          color: "#10b981", glow: "rgba(16,185,129,0.25)" },
+    { title: "Technologies",   count: stats.technologies.count,   featured: stats.technologies.featured,   latest: stats.technologies.latest,   icon: FiTool,   href: "/admin/technologies",    color: "#06b6d4", glow: "rgba(6,182,212,0.25)" },
+    { title: "Education",      count: stats.education.count,      featured: stats.education.featured,      latest: stats.education.latest,      icon: FiBook,   href: "/admin/education",       color: "#a855f7", glow: "rgba(168,85,247,0.25)" },
   ];
 
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#C1BFBE]"></div>
+        <div className="animate-spin rounded-full h-12 w-12" style={{ borderBottom: '2px solid #6366f1' }}></div>
       </div>
     );
   }
 
   return (
     <div className="animate-fade-in">
-      {/* Header Section with Welcome Message */}
+      {/* Header */}
       <div className="mb-10">
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           <div className="relative">
-            <h1 className="text-4xl lg:text-5xl font-bold text-[var(--text-primary)] mb-3 tracking-tight">
+            <h1 className="text-4xl lg:text-5xl font-bold mb-3 tracking-tight" style={{ color: '#e8e8ff' }}>
               {greeting}, Admin 👋
             </h1>
-            <div className="absolute -bottom-2 left-0 w-24 h-1 bg-gradient-to-r from-[#C1BFBE] to-[#5F5F60] rounded-full"></div>
-            <p className="text-[var(--text-secondary)] mt-4 text-lg">
-              Manage your portfolio content with ease
-            </p>
+            <div style={{ position: 'absolute', bottom: -8, left: 0, width: 80, height: 3, background: 'linear-gradient(90deg, #6366f1, #a855f7)', borderRadius: 9999 }} />
+            <p className="mt-5 text-lg" style={{ color: '#7070a0' }}>Manage your portfolio content with ease</p>
           </div>
-
-          {/* Live Clock & Quick Stats */}
           <div className="flex flex-col items-start lg:items-end gap-2">
-            <div className="flex items-center gap-2 text-[var(--text-secondary)] text-sm">
-              <FiClock className="text-[#C1BFBE]" />
+            <div className="flex items-center gap-2 text-sm" style={{ color: '#7070a0' }}>
+              <FiClock style={{ color: '#6366f1' }} />
               <span className="font-mono">{currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
             </div>
-            <div className="flex items-center gap-2 text-[var(--text-secondary)] text-sm">
-              <FiActivity className="text-[#5F5F60]" />
+            <div className="flex items-center gap-2 text-sm" style={{ color: '#7070a0' }}>
+              <FiActivity style={{ color: '#8b5cf6' }} />
               <span>{currentTime.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' })}</span>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Quick Actions Panel */}
+      {/* Quick Actions */}
       <div className="mb-8 grid grid-cols-2 sm:grid-cols-4 gap-4">
-        <Link
-          href="/admin/projects"
-          className="group bg-gradient-to-br from-[#C1BFBE]/10 to-[#A89B8E]/10 hover:from-[#C1BFBE]/20 hover:to-[#A89B8E]/20 border border-[#C1BFBE]/20 rounded-xl p-4 transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-[#C1BFBE]/10"
-        >
-          <div className="flex items-center gap-3">
-            <div className="bg-[#C1BFBE]/20 p-2 rounded-lg group-hover:bg-[#C1BFBE]/30 transition-colors">
-              <FiPlus className="text-[#C1BFBE] w-5 h-5" />
+        {[
+          { href: '/admin/projects',  label: 'New Project', icon: FiPlus,       color: '#6366f1' },
+          { href: '/admin/blogs',     label: 'Write Blog',  icon: FiBook,       color: '#8b5cf6' },
+          { href: '/admin/gallery',   label: 'Gallery',     icon: FiEye,        color: '#06b6d4' },
+          { href: '/admin/settings',  label: 'Settings',    icon: FiTrendingUp, color: '#10b981' },
+        ].map(({ href, label, icon: Icon, color }) => (
+          <Link
+            key={href}
+            href={href}
+            className="group rounded-xl p-4 transition-all duration-300 hover:-translate-y-1"
+            style={{
+              background: `${color}10`,
+              border: `1px solid ${color}25`,
+            }}
+            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = `${color}20`; (e.currentTarget as HTMLElement).style.boxShadow = `0 8px 24px ${color}20`; }}
+            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = `${color}10`; (e.currentTarget as HTMLElement).style.boxShadow = 'none'; }}
+          >
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-lg transition-colors" style={{ background: `${color}20` }}>
+                <Icon style={{ color, width: 18, height: 18 }} />
+              </div>
+              <span className="text-sm font-semibold" style={{ color: '#e8e8ff' }}>{label}</span>
             </div>
-            <span className="text-sm font-semibold text-[var(--text-primary)]">New Project</span>
-          </div>
-        </Link>
-
-        <Link
-          href="/admin/blogs"
-          className="group bg-gradient-to-br from-[#5F5F60]/10 to-[#4C4D4E]/10 hover:from-[#5F5F60]/20 hover:to-[#4C4D4E]/20 border border-[#5F5F60]/20 rounded-xl p-4 transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-[#5F5F60]/10"
-        >
-          <div className="flex items-center gap-3">
-            <div className="bg-[#5F5F60]/20 p-2 rounded-lg group-hover:bg-[#5F5F60]/30 transition-colors">
-              <FiBook className="text-[#5F5F60] w-5 h-5" />
-            </div>
-            <span className="text-sm font-semibold text-[var(--text-primary)]">Write Blog</span>
-          </div>
-        </Link>
-
-        <Link
-          href="/admin/gallery"
-          className="group bg-gradient-to-br from-[#8B7355]/10 to-[#2E2622]/10 hover:from-[#8B7355]/20 hover:to-[#2E2622]/20 border border-[#8B7355]/20 rounded-xl p-4 transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-[#8B7355]/10"
-        >
-          <div className="flex items-center gap-3">
-            <div className="bg-[#8B7355]/20 p-2 rounded-lg group-hover:bg-[#8B7355]/30 transition-colors">
-              <FiEye className="text-[#8B7355] w-5 h-5" />
-            </div>
-            <span className="text-sm font-semibold text-[var(--text-primary)]">Gallery</span>
-          </div>
-        </Link>
-
-        <Link
-          href="/admin/settings"
-          className="group bg-gradient-to-br from-[#A89B8E]/10 to-[#C1BFBE]/10 hover:from-[#A89B8E]/20 hover:to-[#C1BFBE]/20 border border-[#A89B8E]/20 rounded-xl p-4 transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-[#A89B8E]/10"
-        >
-          <div className="flex items-center gap-3">
-            <div className="bg-[#A89B8E]/20 p-2 rounded-lg group-hover:bg-[#A89B8E]/30 transition-colors">
-              <FiTrendingUp className="text-[#A89B8E] w-5 h-5" />
-            </div>
-            <span className="text-sm font-semibold text-[var(--text-primary)]">Settings</span>
-          </div>
-        </Link>
+          </Link>
+        ))}
       </div>
 
       {/* Stats Cards Grid */}
@@ -262,9 +196,79 @@ export default function AdminDashboard() {
             <Link
               key={card.title}
               href={card.href}
-              className={`group relative bg-gradient-to-br from-[#2E2622] to-[#1a1715] overflow-hidden shadow-xl rounded-2xl hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 border border-[#4C4D4E] ${card.accent} animate-fade-in`}
-              style={{ animationDelay: `${index * 100}ms` }}
+              className="group block"
+              style={{ textDecoration: 'none' }}
             >
+              <div
+                style={{
+                  position: 'relative',
+                  background: 'rgba(14,14,31,0.9)',
+                  border: `1px solid ${card.color}25`,
+                  borderLeft: `4px solid ${card.color}`,
+                  borderRadius: 16,
+                  overflow: 'hidden',
+                  transition: 'all 0.35s ease',
+                  animationDelay: `${index * 100}ms`,
+                }}
+                onMouseEnter={e => {
+                  const el = e.currentTarget as HTMLElement;
+                  el.style.transform = 'translateY(-6px)';
+                  el.style.boxShadow = `0 20px 40px ${card.glow}`;
+                  el.style.borderColor = card.color + '60';
+                }}
+                onMouseLeave={e => {
+                  const el = e.currentTarget as HTMLElement;
+                  el.style.transform = 'translateY(0)';
+                  el.style.boxShadow = 'none';
+                  el.style.borderColor = card.color + '25';
+                  el.style.borderLeftColor = card.color;
+                }}
+              >
+                {/* Top shimmer bar */}
+                <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 2, background: `linear-gradient(90deg, transparent, ${card.color}, transparent)`, opacity: 0.7 }} />
+                {/* Corner glow */}
+                <div style={{ position: 'absolute', top: -30, right: -30, width: 120, height: 120, borderRadius: '50%', background: `radial-gradient(circle, ${card.glow} 0%, transparent 70%)`, filter: 'blur(20px)' }} />
+
+                <div style={{ padding: '28px 28px 0' }}>
+                  <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
+                    <div style={{ position: 'relative' }}>
+                      <div style={{ background: `${card.color}18`, border: `1px solid ${card.color}35`, borderRadius: 14, padding: '14px', display: 'inline-flex' }}>
+                        <Icon style={{ width: 26, height: 26, color: card.color, filter: `drop-shadow(0 0 8px ${card.color})` }} />
+                      </div>
+                      <div style={{ position: 'absolute', top: -8, right: -8, background: card.color, color: '#fff', fontSize: 11, fontWeight: 700, padding: '3px 7px', borderRadius: 9999, boxShadow: `0 2px 8px ${card.glow}` }}>
+                        {card.count}
+                      </div>
+                    </div>
+                    <div style={{ textAlign: 'right' }}>
+                      <h3 style={{ fontSize: 17, fontWeight: 700, color: '#e8e8ff', marginBottom: 6 }}>{card.title}</h3>
+                      <div style={{ fontSize: 12, color: '#7070a0' }}>Featured: <span style={{ color: card.color, fontWeight: 600 }}>{card.featured}</span></div>
+                    </div>
+                  </div>
+
+                  {/* Progress bar */}
+                  <div style={{ marginTop: 20 }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6, fontSize: 11, color: '#7070a0' }}>
+                      <span>Featured rate</span>
+                      <span style={{ color: card.color, fontWeight: 600 }}>{card.count > 0 ? Math.round((card.featured / card.count) * 100) : 0}%</span>
+                    </div>
+                    <div style={{ background: 'rgba(255,255,255,0.05)', borderRadius: 9999, height: 5, overflow: 'hidden' }}>
+                      <div style={{ height: '100%', background: `linear-gradient(90deg, ${card.color}, ${card.color}aa)`, borderRadius: 9999, width: card.count > 0 ? `${(card.featured / card.count) * 100}%` : '0%', transition: 'width 1s ease' }} />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Footer */}
+                <div style={{ margin: '16px 0 0', padding: '14px 28px', borderTop: `1px solid ${card.color}15`, background: `${card.color}06` }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <span style={{ fontSize: 12, color: '#7070a0' }}>Latest: <span style={{ color: '#a0a0c0' }}>{card.latest}</span></span>
+                    <span style={{ fontSize: 13, color: card.color, fontWeight: 600 }}>Manage →</span>
+                  </div>
+                </div>
+              </div>
+            </Link>
+          );
+        })}
+      </div>
               {/* Gradient Overlay on Hover */}
               <div className="absolute inset-0 bg-gradient-to-br from-[#C1BFBE]/0 to-[#5F5F60]/0 group-hover:from-[#C1BFBE]/10 group-hover:to-[#5F5F60]/10 transition-all duration-500"></div>
 
@@ -274,218 +278,60 @@ export default function AdminDashboard() {
                 <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-[#5F5F60] to-transparent"></div>
               </div>
 
-              {/* Card Content */}
-              <div className="relative p-7">
-                <div className="flex items-start justify-between">
-                  {/* Icon */}
-                  <div className="relative">
-                    <div className="bg-gradient-to-br from-[#0C0C08] to-[#1a1715] border border-[#4C4D4E] rounded-xl p-4 shadow-lg group-hover:shadow-[#C1BFBE]/20 group-hover:scale-110 transition-all duration-300">
-                      <Icon className="h-7 w-7 text-[#C1BFBE] group-hover:text-[#A89B8E] transition-colors duration-300" />
-                    </div>
-                    {/* Count Badge */}
-                    <div className="absolute -top-2 -right-2 bg-gradient-to-r from-[#C1BFBE] to-[#5F5F60] text-[#0a0a0a] text-xs font-bold px-2 py-1 rounded-full shadow-lg">
-                      {card.count}
-                    </div>
-                  </div>
-
-                  {/* Stats */}
-                  <div className="flex-1 ml-6">
-                    <h3 className="text-lg font-bold text-[#C1BFBE] mb-3 group-hover:text-white transition-colors">
-                      {card.title}
-                    </h3>
-
-                    {/* Metrics */}
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs text-[#5F5F60]">Total Items</span>
-                        <span className="text-sm font-semibold text-[#C1BFBE] bg-[#0C0C08] px-3 py-1 rounded-full">
-                          {card.count}
-                        </span>
-                      </div>
-
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs text-[#5F5F60]">Featured</span>
-                        <span className="text-sm font-semibold text-[#C1BFBE] bg-[#2E2622]/30 px-3 py-1 rounded-full">
-                          {card.featured}
-                        </span>
-                      </div>
-
-                      {/* Progress Bar */}
-                      <div className="mt-3">
-                        <div className="flex items-center justify-between mb-1">
-                          <span className="text-xs text-[#5F5F60]">Featured %</span>
-                          <span className="text-xs font-semibold text-[#C1BFBE]">
-                            {card.count > 0 ? Math.round((card.featured / card.count) * 100) : 0}%
-                          </span>
-                        </div>
-                        <div className="w-full bg-[#0C0C08] rounded-full h-2 overflow-hidden">
-                          <div
-                            className="h-full bg-gradient-to-r from-[#C1BFBE] to-[#5F5F60] rounded-full transition-all duration-1000 ease-out"
-                            style={{
-                              width: card.count > 0 ? `${(card.featured / card.count) * 100}%` : '0%'
-                            }}
-                          ></div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Latest Item */}
-                <div className="mt-5 pt-4 border-t border-[#4C4D4E]">
-                  <p className="text-xs text-[#5F5F60] mb-1">Latest Entry</p>
-                  <p className="text-sm text-[#C1BFBE] truncate font-medium">
-                    {card.latest}
-                  </p>
-                </div>
-              </div>
-
-              {/* Action Footer */}
-              <div className="relative bg-gradient-to-br from-[#0C0C08] to-[#1a1715] px-7 py-4 border-t border-[#4C4D4E] group-hover:bg-gradient-to-br group-hover:from-[#2E2622]/30 group-hover:to-[#4C4D4E]/30 transition-all duration-300">
-                <div className="flex items-center justify-between">
-                  <span className="font-semibold text-[#C1BFBE] group-hover:text-white transition-colors flex items-center text-sm">
-                    <FiPlus className="mr-2 group-hover:rotate-90 transition-transform duration-300" />
-                    Manage {card.title}
-                  </span>
-                  <svg className="w-5 h-5 text-[#5F5F60] group-hover:text-[#C1BFBE] group-hover:translate-x-1 transition-all duration-300" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
-                  </svg>
-                </div>
-              </div>
-
-              {/* Decorative Corner Elements */}
-              <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-[#C1BFBE]/10 to-transparent rounded-bl-full opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-              <div className="absolute bottom-0 left-0 w-20 h-20 bg-gradient-to-tr from-[#5F5F60]/10 to-transparent rounded-tr-full opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-            </Link>
-          );
-        })}
+      {/* ── Enhanced Stats Row ── */}
+      <div className="mt-10 grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 relative z-10">
+        <StatsCard title="Total Items"  value={cards.reduce((s,c)=>s+c.count,0)}   icon={FiFolder}   color="#6366f1" glow="rgba(99,102,241,0.2)"  trend={{ value:12, isPositive:true }} delay={0}   />
+        <StatsCard title="Featured"     value={cards.reduce((s,c)=>s+c.featured,0)} icon={FiStar}     color="#a855f7" glow="rgba(168,85,247,0.2)" trend={{ value:8,  isPositive:true }} delay={0.1} />
+        <StatsCard title="Categories"   value={cards.length}                         icon={FiActivity} color="#06b6d4" glow="rgba(6,182,212,0.2)"                                       delay={0.2} />
+        <StatsCard title="Media Files"  value="24"                                   icon={FiImage}    color="#10b981" glow="rgba(16,185,129,0.2)" trend={{ value:15, isPositive:true }} delay={0.3} />
       </div>
 
-      {/* Enhanced Stats Grid with New Component */}
-      <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <StatsCard
-          title="Total Items"
-          value={cards.reduce((sum, card) => sum + card.count, 0)}
-          icon={FiFolder}
-          color="#C1BFBE"
-          trend={{ value: 12, isPositive: true }}
-          delay={0}
-        />
-        <StatsCard
-          title="Featured"
-          value={cards.reduce((sum, card) => sum + card.featured, 0)}
-          icon={FiStar}
-          color="#5F5F60"
-          trend={{ value: 8, isPositive: true }}
-          delay={0.1}
-        />
-        <StatsCard
-          title="Categories"
-          value={cards.length}
-          icon={FiActivity}
-          color="#8B7355"
-          delay={0.2}
-        />
-        <StatsCard
-          title="Media Files"
-          value="24"
-          icon={FiImage}
-          color="#A89B8E"
-          trend={{ value: 15, isPositive: true }}
-          delay={0.3}
-        />
-      </div>
-
-      {/* Progress Visualization Section */}
-      <div className="mt-10 grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Circular Progress Cards */}
-        <div className="bg-gradient-to-br from-[#2E2622]/30 to-[#1a1715]/30 border border-[#4C4D4E]/30 rounded-2xl p-6 flex flex-col items-center justify-center hover:border-[#C1BFBE]/40 transition-all duration-300">
-          <CircularProgress
-            value={cards.reduce((sum, card) => sum + card.count, 0) > 0
-              ? Math.round((cards.reduce((sum, card) => sum + card.featured, 0) / cards.reduce((sum, card) => sum + card.count, 0)) * 100)
-              : 0}
-            color="#C1BFBE"
-            backgroundColor="#4C4D4E"
-            size={140}
-            strokeWidth={10}
-          />
-          <p className="mt-4 text-sm font-semibold text-[var(--text-primary)]">Featured Rate</p>
-          <p className="text-xs text-[var(--text-secondary)]">Overall completion</p>
-        </div>
-
-        <div className="bg-gradient-to-br from-[#2E2622]/30 to-[#1a1715]/30 border border-[#4C4D4E]/30 rounded-2xl p-6 flex flex-col items-center justify-center hover:border-[#5F5F60]/40 transition-all duration-300">
-          <CircularProgress
-            value={stats.projects.count > 0
-              ? Math.round((stats.projects.featured / stats.projects.count) * 100)
-              : 0}
-            color="#5F5F60"
-            backgroundColor="#4C4D4E"
-            size={140}
-            strokeWidth={10}
-          />
-          <p className="mt-4 text-sm font-semibold text-[var(--text-primary)]">Projects Status</p>
-          <p className="text-xs text-[var(--text-secondary)]">Featured projects</p>
-        </div>
-
-        <div className="bg-gradient-to-br from-[#2E2622]/30 to-[#1a1715]/30 border border-[#4C4D4E]/30 rounded-2xl p-6 flex flex-col items-center justify-center hover:border-[#8B7355]/40 transition-all duration-300">
-          <CircularProgress
-            value={stats.skills.count > 0
-              ? Math.round((stats.skills.featured / stats.skills.count) * 100)
-              : 0}
-            color="#8B7355"
-            backgroundColor="#4C4D4E"
-            size={140}
-            strokeWidth={10}
-          />
-          <p className="mt-4 text-sm font-semibold text-[var(--text-primary)]">Skills Progress</p>
-          <p className="text-xs text-[var(--text-secondary)]">Highlighted skills</p>
-        </div>
-      </div>
-
-      {/* Two Column Layout: Portfolio Overview & Activity Timeline */}
-      <div className="mt-10 grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Portfolio Overview */}
-        <div className="bg-gradient-to-br from-[#2E2622]/30 to-[#1a1715]/30 border border-[#4C4D4E]/30 rounded-2xl p-6 backdrop-blur-sm">
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-3">
-              <div className="bg-gradient-to-br from-[#C1BFBE] to-[#5F5F60] p-2 rounded-lg">
-                <FiActivity className="text-white w-5 h-5" />
-              </div>
-              <h2 className="text-xl font-bold text-[var(--text-primary)]">Portfolio Overview</h2>
-            </div>
+      {/* ── Circular Progress ── */}
+      <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4 relative z-10">
+        {[
+          { label: 'Featured Rate',   sub: 'Overall completion',  color: '#6366f1', value: cards.reduce((s,c)=>s+c.count,0) > 0 ? Math.round((cards.reduce((s,c)=>s+c.featured,0)/cards.reduce((s,c)=>s+c.count,0))*100) : 0 },
+          { label: 'Projects Status', sub: 'Featured projects',   color: '#8b5cf6', value: stats.projects.count > 0 ? Math.round((stats.projects.featured/stats.projects.count)*100) : 0 },
+          { label: 'Skills Progress', sub: 'Highlighted skills',  color: '#10b981', value: stats.skills.count > 0 ? Math.round((stats.skills.featured/stats.skills.count)*100) : 0 },
+        ].map(({ label, sub, color, value }) => (
+          <div key={label} style={{ background: 'rgba(14,14,31,0.85)', border: `1px solid ${color}25`, borderRadius: 16, padding: 24, display: 'flex', flexDirection: 'column', alignItems: 'center', transition: 'all 0.3s' }}
+            onMouseEnter={e => { (e.currentTarget as HTMLElement).style.borderColor = `${color}50`; (e.currentTarget as HTMLElement).style.boxShadow = `0 8px 32px ${color}20`; }}
+            onMouseLeave={e => { (e.currentTarget as HTMLElement).style.borderColor = `${color}25`; (e.currentTarget as HTMLElement).style.boxShadow = 'none'; }}
+          >
+            <CircularProgress value={value} color={color} backgroundColor="rgba(255,255,255,0.06)" size={130} strokeWidth={9} />
+            <p style={{ marginTop: 14, fontSize: 14, fontWeight: 700, color: '#e8e8ff' }}>{label}</p>
+            <p style={{ fontSize: 11, color: '#7070a0', marginTop: 2 }}>{sub}</p>
           </div>
+        ))}
+      </div>
 
-          <div className="space-y-3">
-            {cards.slice(0, 5).map((card) => (
-              <Link
-                key={card.title}
-                href={card.href}
-                className="group block bg-[#0C0C08]/50 border border-[#4C4D4E]/30 rounded-xl p-4 hover:bg-[#2E2622]/30 hover:border-[#C1BFBE]/30 transition-all duration-300"
+      {/* ── Portfolio Overview + Activity Timeline ── */}
+      <div className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-6 relative z-10">
+
+        {/* Portfolio Overview */}
+        <div style={{ background: 'rgba(14,14,31,0.85)', border: '1px solid rgba(99,102,241,0.15)', borderRadius: 18, padding: 24, backdropFilter: 'blur(16px)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 20 }}>
+            <div style={{ width: 36, height: 36, borderRadius: 10, background: 'linear-gradient(135deg,#6366f1,#a855f7)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <FiActivity style={{ width: 18, height: 18, color: '#fff' }} />
+            </div>
+            <h2 style={{ fontSize: 17, fontWeight: 700, color: '#e8e8ff' }}>Portfolio Overview</h2>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            {cards.map((card) => (
+              <Link key={card.title} href={card.href} style={{ textDecoration: 'none', display: 'block', padding: '12px 14px', borderRadius: 12, background: `${card.color}08`, border: `1px solid ${card.color}18`, transition: 'all 0.25s' }}
+                onMouseEnter={e => { (e.currentTarget as HTMLElement).style.background = `${card.color}14`; (e.currentTarget as HTMLElement).style.borderColor = `${card.color}35`; }}
+                onMouseLeave={e => { (e.currentTarget as HTMLElement).style.background = `${card.color}08`; (e.currentTarget as HTMLElement).style.borderColor = `${card.color}18`; }}
               >
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3 flex-1">
-                    {card.icon && (
-                      <div className="bg-[#C1BFBE]/10 p-2 rounded-lg group-hover:bg-[#C1BFBE]/20 transition-colors">
-                        <card.icon className="text-[#C1BFBE] w-4 h-4" />
-                      </div>
-                    )}
-                    <div className="flex-1 min-w-0">
-                      <span className="text-sm font-semibold text-[#C1BFBE] block mb-1">{card.title}</span>
-                      <p className="text-xs text-[#5F5F60] truncate">{card.latest}</p>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    <div style={{ width: 28, height: 28, borderRadius: 8, background: `${card.color}20`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <card.icon style={{ width: 14, height: 14, color: card.color }} />
                     </div>
+                    <span style={{ fontSize: 13, fontWeight: 600, color: '#d0d0f0' }}>{card.title}</span>
                   </div>
-                  <div className="flex items-center gap-3">
-                    <div className="text-right">
-                      <div className="text-xs text-[var(--text-secondary)]">
-                        <span className="font-bold text-[#C1BFBE]">{card.count}</span>/{card.featured}
-                      </div>
-                    </div>
-                    <div className="bg-gradient-to-br from-[#C1BFBE]/20 to-[#5F5F60]/20 px-2 py-1 rounded-full min-w-[45px] text-center">
-                      <span className="text-xs font-bold text-[#C1BFBE]">
-                        {card.count > 0 ? Math.round((card.featured / card.count) * 100) : 0}%
-                      </span>
-                    </div>
-                  </div>
+                  <span style={{ fontSize: 12, color: card.color, fontWeight: 700 }}>{card.count} total</span>
+                </div>
+                <div style={{ background: 'rgba(255,255,255,0.05)', borderRadius: 9999, height: 4, overflow: 'hidden' }}>
+                  <div style={{ height: '100%', background: `linear-gradient(90deg, ${card.color}, ${card.color}80)`, borderRadius: 9999, width: card.count > 0 ? `${(card.featured/card.count)*100}%` : '0%', transition: 'width 1s ease' }} />
                 </div>
               </Link>
             ))}
@@ -493,84 +339,45 @@ export default function AdminDashboard() {
         </div>
 
         {/* Activity Timeline */}
-        <div className="bg-gradient-to-br from-[#2E2622]/30 to-[#1a1715]/30 border border-[#4C4D4E]/30 rounded-2xl p-6 backdrop-blur-sm">
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-3">
-              <div className="bg-gradient-to-br from-[#5F5F60] to-[#8B7355] p-2 rounded-lg">
-                <FiClock className="text-white w-5 h-5" />
-              </div>
-              <h2 className="text-xl font-bold text-[var(--text-primary)]">Recent Activity</h2>
+        <div style={{ background: 'rgba(14,14,31,0.85)', border: '1px solid rgba(99,102,241,0.15)', borderRadius: 18, padding: 24, backdropFilter: 'blur(16px)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 20 }}>
+            <div style={{ width: 36, height: 36, borderRadius: 10, background: 'linear-gradient(135deg,#8b5cf6,#06b6d4)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <FiClock style={{ width: 18, height: 18, color: '#fff' }} />
             </div>
+            <h2 style={{ fontSize: 17, fontWeight: 700, color: '#e8e8ff' }}>Recent Activity</h2>
           </div>
-
-          <div className="space-y-4">
-            {/* Activity Item 1 */}
-            <div className="flex gap-4 group">
-              <div className="flex flex-col items-center">
-                <div className="bg-[#C1BFBE]/20 p-2 rounded-full group-hover:bg-[#C1BFBE]/30 transition-colors">
-                  <FiPlus className="text-[#C1BFBE] w-3 h-3" />
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
+            {[
+              { icon: FiPlus,         color: '#6366f1', title: 'Content Updated',    desc: 'Dashboard statistics refreshed', time: 'Just now' },
+              { icon: FiSettings,     color: '#8b5cf6', title: 'System Status',      desc: 'All systems operational',        time: '5 min ago' },
+              { icon: FiUsers,        color: '#10b981', title: 'Admin Session',       desc: 'Logged in successfully',         time: `Today ${currentTime.toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})}` },
+              { icon: FiMessageSquare,color: '#06b6d4', title: 'Database Connected', desc: 'MongoDB connection active',       time: 'Today' },
+              { icon: FiTrendingUp,   color: '#f59e0b', title: 'Portfolio Updated',  desc: 'Latest entries synced',          time: 'Today' },
+            ].map(({ icon: Icon, color, title, desc, time }, i, arr) => (
+              <div key={i} style={{ display: 'flex', gap: 14, paddingBottom: i < arr.length - 1 ? 16 : 0 }}>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                  <div style={{ width: 32, height: 32, borderRadius: '50%', background: `${color}18`, border: `1px solid ${color}35`, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                    <Icon style={{ width: 14, height: 14, color }} />
+                  </div>
+                  {i < arr.length - 1 && <div style={{ width: 1, flex: 1, background: 'rgba(99,102,241,0.12)', marginTop: 6 }} />}
                 </div>
-                <div className="w-px h-full bg-[#4C4D4E]/30 mt-2"></div>
-              </div>
-              <div className="flex-1 pb-4">
-                <p className="text-sm font-semibold text-[var(--text-primary)] mb-1">Content Updated</p>
-                <p className="text-xs text-[var(--text-secondary)]">Dashboard statistics refreshed</p>
-                <p className="text-xs text-[#5F5F60] mt-1">Just now</p>
-              </div>
-            </div>
-
-            {/* Activity Item 2 */}
-            <div className="flex gap-4 group">
-              <div className="flex flex-col items-center">
-                <div className="bg-[#5F5F60]/20 p-2 rounded-full group-hover:bg-[#5F5F60]/30 transition-colors">
-                  <FiSettings className="text-[#5F5F60] w-3 h-3" />
-                </div>
-                <div className="w-px h-full bg-[#4C4D4E]/30 mt-2"></div>
-              </div>
-              <div className="flex-1 pb-4">
-                <p className="text-sm font-semibold text-[var(--text-primary)] mb-1">System Status</p>
-                <p className="text-xs text-[var(--text-secondary)]">All systems operational</p>
-                <p className="text-xs text-[#5F5F60] mt-1">5 minutes ago</p>
-              </div>
-            </div>
-
-            {/* Activity Item 3 */}
-            <div className="flex gap-4 group">
-              <div className="flex flex-col items-center">
-                <div className="bg-[#8B7355]/20 p-2 rounded-full group-hover:bg-[#8B7355]/30 transition-colors">
-                  <FiUsers className="text-[#8B7355] w-3 h-3" />
-                </div>
-                <div className="w-px h-full bg-[#4C4D4E]/30 mt-2"></div>
-              </div>
-              <div className="flex-1 pb-4">
-                <p className="text-sm font-semibold text-[var(--text-primary)] mb-1">Admin Session</p>
-                <p className="text-xs text-[var(--text-secondary)]">Logged in successfully</p>
-                <p className="text-xs text-[#5F5F60] mt-1">Today at {currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
-              </div>
-            </div>
-
-            {/* Activity Item 4 */}
-            <div className="flex gap-4 group">
-              <div className="flex flex-col items-center">
-                <div className="bg-[#A89B8E]/20 p-2 rounded-full group-hover:bg-[#A89B8E]/30 transition-colors">
-                  <FiMessageSquare className="text-[#A89B8E] w-3 h-3" />
+                <div style={{ flex: 1, paddingTop: 4 }}>
+                  <p style={{ fontSize: 13, fontWeight: 600, color: '#d0d0f0', marginBottom: 2 }}>{title}</p>
+                  <p style={{ fontSize: 11, color: '#7070a0' }}>{desc}</p>
+                  <p style={{ fontSize: 10, color: color, fontWeight: 500, marginTop: 4 }}>{time}</p>
                 </div>
               </div>
-              <div className="flex-1">
-                <p className="text-sm font-semibold text-[var(--text-primary)] mb-1">Database Connected</p>
-                <p className="text-xs text-[var(--text-secondary)]">MongoDB connection active</p>
-                <p className="text-xs text-[#5F5F60] mt-1">Today</p>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
       </div>
 
-      {/* Motivational Footer */}
-      <div className="mt-8 text-center">
-        <div className="inline-block bg-gradient-to-r from-[#C1BFBE]/10 via-[#5F5F60]/10 to-[#8B7355]/10 border border-[#C1BFBE]/20 rounded-full px-6 py-3">
-          <p className="text-sm text-[var(--text-secondary)]">
-            <span className="font-semibold text-[#C1BFBE]">Keep building!</span> Your portfolio is growing beautifully ✨
+      {/* ── Footer ── */}
+      <div style={{ marginTop: 32, textAlign: 'center' }}>
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, padding: '10px 24px', background: 'linear-gradient(135deg,rgba(99,102,241,0.10),rgba(168,85,247,0.08))', border: '1px solid rgba(99,102,241,0.20)', borderRadius: 9999 }}>
+          <span style={{ width: 7, height: 7, borderRadius: '50%', background: '#10b981', boxShadow: '0 0 8px rgba(16,185,129,0.8)', display: 'inline-block', animation: 'badge-pulse 2s infinite' }} />
+          <p style={{ fontSize: 13, color: '#9090b0' }}>
+            <span style={{ fontWeight: 700, background: 'linear-gradient(135deg,#6366f1,#a855f7)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Keep building!</span> Your portfolio is growing beautifully ✨
           </p>
         </div>
       </div>

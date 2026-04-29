@@ -33,7 +33,7 @@ export default function SectionTransition({
   sectionName,
 }: SectionTransitionProps) {
   const ref = useRef(null);
-  const isInView = useInView(ref, { once: false, margin: '-20%' });
+  const isInView = useInView(ref, { once: true, margin: '0px' });
   const getVariants = () => {
     switch (animationType) {
       case 'scale-up':

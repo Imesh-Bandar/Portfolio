@@ -1,0 +1,130 @@
+/* ============================================
+   PREMIUM LIGHT MODE COMPONENT SYSTEM
+   ============================================ */
+
+/* Surface card */
+.light-surface {
+  background: #ffffff;
+  border: 1px solid rgba(99,102,241,0.12);
+  border-radius: 20px;
+  box-shadow: 0 4px 24px rgba(99,102,241,0.07), 0 1px 3px rgba(0,0,0,0.04);
+  transition: all 0.35s cubic-bezier(0.4,0,0.2,1);
+}
+.light-surface:hover {
+  box-shadow: 0 16px 48px rgba(99,102,241,0.13), 0 4px 12px rgba(0,0,0,0.06);
+  transform: translateY(-3px);
+  border-color: rgba(99,102,241,0.24);
+}
+
+/* Accent top strip on cards */
+.card-accent-top { position: relative; overflow: hidden; }
+.card-accent-top::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, #6366f1, #a855f7, #ec4899);
+  border-radius: 20px 20px 0 0;
+}
+
+/* Light skill pill */
+.skill-pill-light {
+  background: linear-gradient(135deg, rgba(99,102,241,0.10), rgba(139,92,246,0.07));
+  border: 1px solid rgba(99,102,241,0.18);
+  color: #4338ca;
+  border-radius: 9999px;
+  padding: 5px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.25s ease;
+}
+.skill-pill-light:hover {
+  background: linear-gradient(135deg, rgba(99,102,241,0.18), rgba(139,92,246,0.14));
+  border-color: rgba(99,102,241,0.35);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(99,102,241,0.15);
+}
+
+/* Stat number gradient */
+.stat-number-light {
+  background: linear-gradient(135deg, #6366f1, #7c3aed);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 800;
+}
+
+/* Indigo badge */
+.badge-indigo-light {
+  background: rgba(99,102,241,0.10);
+  border: 1px solid rgba(99,102,241,0.20);
+  color: #4f46e5;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 9999px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* Intro label pill */
+.intro-label-light {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 18px;
+  background: linear-gradient(135deg, rgba(99,102,241,0.10), rgba(139,92,246,0.08));
+  border: 1px solid rgba(99,102,241,0.18);
+  border-radius: 9999px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #4338ca;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  backdrop-filter: blur(8px);
+}
+
+/* Section divider */
+.section-divider-light {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(99,102,241,0.25), rgba(168,85,247,0.20), transparent);
+  margin: 0 auto;
+  max-width: 600px;
+}
+
+/* Strong dot grid */
+.bg-dots-light-strong {
+  background-image: radial-gradient(rgba(99,102,241,0.22) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+/* Section texture */
+.section-texture-light {
+  background-color: #fafbff;
+  background-image: repeating-linear-gradient(
+    -45deg, rgba(99,102,241,0.025) 0px, rgba(99,102,241,0.025) 1px, transparent 1px, transparent 12px
+  );
+}
+
+/* Timeline dot */
+.timeline-dot-light {
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #6366f1, #a855f7);
+  box-shadow: 0 0 0 3px rgba(99,102,241,0.15), 0 0 12px rgba(99,102,241,0.25);
+  flex-shrink: 0;
+}
+
+/* Section title gradient in light mode */
+[data-theme="light"] .section-title {
+  background: linear-gradient(135deg, #1e1b4b, #4338ca);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Override bg-grid-light with more visible version */
+.bg-grid-light {
+  background-image:
+    linear-gradient(rgba(99,102,241,0.09) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(99,102,241,0.09) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
